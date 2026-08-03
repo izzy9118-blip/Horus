@@ -8,7 +8,7 @@ Tiers, in mandatory order:
 
 - **T1 OWN WORDS** — speeches, decrees, signed texts, official transcripts from the principal's own channels. Quotations short and cited.
 - **T2 CONDUCT** — dated acts only. What was done, when, per what source.
-- **T3 PERSONNEL** — appointments, dismissals, command changes, read as documented events (the reading of them as signals belongs to ministers, not Horus).
+- **T3 PERSONNEL** — appointments, dismissals, command changes, read as documented events (interpretation belongs to ministers, not Horus).
 - **T4 FIELD** — what is held, taken, lost, deployed, signed, paid. The material state, dated.
 - **T5 OTHERS' ACCOUNTS** — what adversaries, allies, mediators, and press say, admitted last, each marked with whose account it is.
 
