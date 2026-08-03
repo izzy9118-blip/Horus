@@ -1,0 +1,14 @@
+identity:
+  organ: horus
+  role: eyes of the Assembly
+  sanctum_contract:
+    gate: referenced by hub
+    files: held here
+status: FOUNDING
+completeness: PENDING_PROBE
+safeguards:
+  - no_judgment
+  - no_self_certification
+  - tier_order_is_law
+  - decay_enforced
+  - queries_logged
