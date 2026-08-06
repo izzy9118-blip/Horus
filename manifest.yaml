@@ -12,3 +12,22 @@ safeguards:
   - tier_order_is_law
   - decay_enforced
   - queries_logged
+  - original_language_t1_required
+charter_amendments:
+  - id: HORUS-AMD-001
+    name: the language tooth
+    date: 2026-08-06
+    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    amends:
+      - charter.md, T1 tier definition
+      - charter.md, the file header standard
+      - charter.md, the parity gate
+    effect: >-
+      T1 is FILLED only on original-language primary matter. Translations are
+      admissible as marked supplements and do not fill the tier. The parity
+      manifest records per-principal T1 language and language state, and a T1
+      declared FILLED on translation alone is recorded as a gap.
+    rationale: >-
+      Three consecutive proving-run inversions - Iran once, Russia twice - each
+      traced to a principal heard only through English or derivative sources. The
+      reading inverted each time the original-language record arrived.
