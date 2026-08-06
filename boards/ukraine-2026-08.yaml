@@ -1,0 +1,91 @@
+record_type: horus_board_roster
+board: ukraine-2026-08
+version: 1.0.0
+status: CLOSED
+assembled: 2026-08-06
+closed: 2026-08-06
+board_type: war
+supersedes: boards/ukraine.yaml
+
+principle: >-
+  A board names the principals whose files must exist before any minister reasons
+  on it. Naming the roster is a scope act, not a judgment: it says who is on the
+  board, never what any of them is doing. Persons and bodies are never merged.
+
+closure: >-
+  This board is CLOSED. The files were gathered with no reading in view and
+  frozen at the date above. A minister - whether a harness run or a room - reads
+  this board and may not add to it. If the ground is wrong, the remedy is a new
+  board with a new date, not an edit made while a reading is forming. The
+  invisible curator enters exactly here: through the gatherer who is also the
+  judge, adding the fact his reading turned out to need.
+
+roster:
+  - id: russian-federation
+    name: Russian Federation
+    type: body
+    file: files/russian-federation.md
+    own_channel: kremlin.ru
+    language: Russian
+  - id: russian-federation--putin
+    name: Vladimir Vladimirovich Putin
+    type: person
+    file: files/russian-federation--putin.md
+    own_channel: kremlin.ru
+    language: Russian
+  - id: ukraine
+    name: Ukraine
+    type: body
+    file: files/ukraine.md
+    own_channel: president.gov.ua, mfa.gov.ua - UNREACHABLE; zakon.rada.gov.ua reached
+    language: Ukrainian
+  - id: ukraine--zelensky
+    name: Volodymyr Oleksandrovych Zelensky
+    type: person
+    file: files/ukraine--zelensky.md
+    own_channel: president.gov.ua - UNREACHABLE; zakon.rada.gov.ua reached
+    language: Ukrainian
+  - id: united-states
+    name: United States
+    type: body
+    file: files/united-states.md
+    own_channel: whitehouse.gov, state.gov
+    language: English
+  - id: germany
+    name: Federal Republic of Germany
+    type: body
+    file: files/germany.md
+    own_channel: bundesregierung.de Bulletin
+    language: German
+  - id: germany--merz
+    name: Friedrich Merz
+    type: person
+    file: files/germany--merz.md
+    own_channel: bundesregierung.de Bulletin
+    language: German
+
+roster_note: >-
+  Germany enters this board through its operative principal, per owner ruling:
+  Europe is led by Germany as well, and a board that seats Europe only as an
+  abstraction seats nobody. Body and person are filed separately, as the charter
+  requires.
+
+decay_tolerance_days:
+  note: >-
+    Charter defaults, not overridden. T4 is 7 days because this is a war board.
+  T1: 90
+  T2: 30
+  T3: 60
+  T4: 7
+  T5: 30
+
+gate_rule: >-
+  PASS only if all principals' files exist with T1, T2, and T4 FILLED and within
+  tolerance. T1 is filled only on original-language primary matter, per charter
+  amendment HORUS-AMD-001. Otherwise HOLD, with the gaps named.
+
+standing_question: >-
+  The American backstop position behind a European security guarantee to Ukraine.
+  Declared in files/united-states.md as a gap in the record: the principal's own
+  channels were searched and no 2026 statement specifying that position was
+  found.

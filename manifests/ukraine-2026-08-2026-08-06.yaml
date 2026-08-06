@@ -1,0 +1,376 @@
+record_type: horus_parity_manifest
+board: ukraine-2026-08
+board_type: war
+as_of: 2026-08-06
+roster_ref: boards/ukraine-2026-08.yaml
+gate_rule: PASS only if all principals' files exist with T1, T2, and T4 FILLED and within tolerance. T1 is filled only on original-language primary matter, per charter amendment HORUS-AMD-001. Otherwise HOLD, with the gaps named.
+verdict: HOLD
+gap_count: 11
+gaps:
+  - principal: Ukraine
+    gap: T1 is THIN; the gate requires FILLED
+  - principal: Ukraine
+    gap: T2 is THIN; the gate requires FILLED
+  - principal: Ukraine
+    gap: T4 is THIN; the gate requires FILLED
+  - principal: Volodymyr Oleksandrovych Zelensky
+    gap: T2 is THIN; the gate requires FILLED
+  - principal: Volodymyr Oleksandrovych Zelensky
+    gap: T4 is EMPTY; the gate requires FILLED
+  - principal: United States
+    gap: T2 is THIN; the gate requires FILLED
+  - principal: United States
+    gap: T4 is EMPTY; the gate requires FILLED
+  - principal: Federal Republic of Germany
+    gap: T2 is THIN; the gate requires FILLED
+  - principal: Federal Republic of Germany
+    gap: T4 is EMPTY; the gate requires FILLED
+  - principal: Friedrich Merz
+    gap: T2 is THIN; the gate requires FILLED
+  - principal: Friedrich Merz
+    gap: T4 is EMPTY; the gate requires FILLED
+language_mark:
+  rule: "charter HORUS-AMD-001: T1 is filled only on original-language primary matter; a principal heard only in translation has not been heard"
+  heard_in_own_words:
+    - Russian Federation
+    - Vladimir Vladimirovich Putin
+    - Volodymyr Oleksandrovych Zelensky
+    - United States
+    - Federal Republic of Germany
+    - Friedrich Merz
+  not_heard_in_own_words:
+    - Ukraine
+  carries_mark: true
+  consequence: No judgment about a principal may rise above the tier at which that principal was actually heard. This mark travels into any run made across this board.
+principals:
+  - id: russian-federation
+    name: Russian Federation
+    type: body
+    file: files/russian-federation.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 90
+        age_days: 0
+        staleness: within tolerance
+        language: Russian
+        language_state: ORIGINAL
+      T2:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 30
+        age_days: 0
+        staleness: within tolerance
+      T3:
+        status: FILLED
+        last_refresh: 2026-08-05
+        tolerance_days: 60
+        age_days: 1
+        staleness: within tolerance
+      T4:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: FILLED
+        last_refresh: 2026-08-04
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+    heard_in_own_words: true
+  - id: russian-federation--putin
+    name: Vladimir Vladimirovich Putin
+    type: person
+    file: files/russian-federation--putin.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 90
+        age_days: 0
+        staleness: within tolerance
+        language: Russian
+        language_state: ORIGINAL
+      T2:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 30
+        age_days: 0
+        staleness: within tolerance
+      T3:
+        status: THIN
+        last_refresh: 2026-08-05
+        tolerance_days: 60
+        age_days: 1
+        staleness: within tolerance
+      T4:
+        status: FILLED
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: FILLED
+        last_refresh: 2026-08-04
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+    heard_in_own_words: true
+  - id: ukraine
+    name: Ukraine
+    type: body
+    file: files/ukraine.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: THIN
+        last_refresh: 2026-07-22
+        tolerance_days: 90
+        age_days: 15
+        staleness: within tolerance
+        language: Ukrainian
+        language_state: ORIGINAL
+      T2:
+        status: THIN
+        last_refresh: 2026-08-04
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+      T3:
+        status: FILLED
+        last_refresh: 2026-07-22
+        tolerance_days: 60
+        age_days: 15
+        staleness: within tolerance
+      T4:
+        status: THIN
+        last_refresh: 2026-08-04
+        tolerance_days: 7
+        age_days: 2
+        staleness: within tolerance
+      T5:
+        status: THIN
+        last_refresh: 2026-08-04
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+    heard_in_own_words: false
+  - id: ukraine--zelensky
+    name: Volodymyr Oleksandrovych Zelensky
+    type: person
+    file: files/ukraine--zelensky.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-07-22
+        tolerance_days: 90
+        age_days: 15
+        staleness: within tolerance
+        language: Ukrainian
+        language_state: ORIGINAL
+      T2:
+        status: THIN
+        last_refresh: 2026-07-22
+        tolerance_days: 30
+        age_days: 15
+        staleness: within tolerance
+      T3:
+        status: FILLED
+        last_refresh: 2026-07-22
+        tolerance_days: 60
+        age_days: 15
+        staleness: within tolerance
+      T4:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: THIN
+        last_refresh: 2026-07-22
+        tolerance_days: 30
+        age_days: 15
+        staleness: within tolerance
+    heard_in_own_words: true
+  - id: united-states
+    name: United States
+    type: body
+    file: files/united-states.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-07-08
+        tolerance_days: 90
+        age_days: 29
+        staleness: within tolerance
+        language: English
+        language_state: ORIGINAL
+      T2:
+        status: THIN
+        last_refresh: 2026-07-08
+        tolerance_days: 30
+        age_days: 29
+        staleness: within tolerance
+      T3:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 60
+        age_days: 0
+        staleness: within tolerance
+      T4:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 30
+        age_days: 0
+        staleness: within tolerance
+    heard_in_own_words: true
+  - id: germany
+    name: Federal Republic of Germany
+    type: body
+    file: files/germany.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-06-11
+        tolerance_days: 90
+        age_days: 56
+        staleness: within tolerance
+        language: German
+        language_state: ORIGINAL
+      T2:
+        status: THIN
+        last_refresh: 2026-07-09
+        tolerance_days: 30
+        age_days: 28
+        staleness: within tolerance
+      T3:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 60
+        age_days: 0
+        staleness: within tolerance
+      T4:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: THIN
+        last_refresh: 2026-07-08
+        tolerance_days: 30
+        age_days: 29
+        staleness: within tolerance
+    heard_in_own_words: true
+  - id: germany--merz
+    name: Friedrich Merz
+    type: person
+    file: files/germany--merz.md
+    file_state: PRESENT
+    assembly_date: 2026-08-06
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-07-15
+        tolerance_days: 90
+        age_days: 22
+        staleness: within tolerance
+        language: German
+        language_state: ORIGINAL
+      T2:
+        status: THIN
+        last_refresh: 2026-07-15
+        tolerance_days: 30
+        age_days: 22
+        staleness: within tolerance
+      T3:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 60
+        age_days: 0
+        staleness: within tolerance
+      T4:
+        status: EMPTY
+        last_refresh: 2026-08-06
+        tolerance_days: 7
+        age_days: 0
+        staleness: within tolerance
+      T5:
+        status: THIN
+        last_refresh: 2026-06-11
+        tolerance_days: 30
+        age_days: 56
+        staleness: STALE
+    heard_in_own_words: true
+generated_by: harness.py, by rule; PASS/HOLD is not an opinion
+note: A file's silence means NOT GATHERED, never "nothing there." Horus certifies nothing; files are graded by owner probing.
+
+closure:
+  state: CLOSED
+  closed: 2026-08-06
+  rule: >-
+    The board is frozen. A minister reads it and may not add to it. If the ground
+    is wrong the remedy is a new board with a new date, never an edit made while a
+    reading is forming.
+  gathered_with_no_reading_in_view: true
+declared_gap:
+  id: UKR-2026-08-GAP-001
+  subject: the American backstop behind a European security guarantee to Ukraine
+  state: DECLARED_NOT_FILLED
+  what_was_searched: >-
+    whitehouse.gov briefings, statements, presidential actions and fact sheets;
+    state.gov press releases.
+  what_was_found: >-
+    No 2026 statement in which the United States specifies its backstop position.
+    On the record instead: a refusal to specify dated 2025-04-18; a framework text
+    of 2025-11-23 that refers final decisions to the two presidents without
+    stating what the United States underwrites; and a fact sheet of 2026-07-08
+    whose subject is allied burden-shifting.
+  status: >-
+    Recorded as a gap in the record, not as a finding about American intentions.
+    The reading of an absence belongs to a minister, not to the eyes.
+unreachable_channels:
+  - principal: Ukraine and Zelensky
+    channel: president.gov.ua
+    result: HTTP 403 on every path tried, Ukrainian and English
+    consequence: >-
+      Addresses and speeches NOT GATHERED. The own-words tier for these principals
+      rests on signed instruments from zakon.rada.gov.ua, which are primary matter
+      in the original language.
+  - principal: Ukraine
+    channel: mfa.gov.ua
+    result: HTTP 403
+  - principal: Ukraine
+    channel: mil.gov.ua/news
+    result: HTTP 404
+certification: >-
+  Horus certifies nothing. This manifest is generated by rule from the file
+  headers; the files themselves are graded only by owner probing.
