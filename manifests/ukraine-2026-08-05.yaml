@@ -1,0 +1,154 @@
+record_type: horus_parity_manifest
+board: ukraine
+board_type: war
+as_of: 2026-08-05
+roster_ref: boards/ukraine.yaml
+gate_rule: PASS only if all principals' files exist with T1, T2, and T4 FILLED and within tolerance. Otherwise HOLD, with the gaps named.
+verdict: HOLD
+gap_count: 3
+gaps:
+  - principal: Ukraine
+    gap: "no file: the principal has not been gathered"
+    tiers_required:
+      - T1
+      - T2
+      - T4
+  - principal: Volodymyr Oleksandrovych Zelensky
+    gap: "no file: the principal has not been gathered"
+    tiers_required:
+      - T1
+      - T2
+      - T4
+  - principal: United States
+    gap: "no file: the principal has not been gathered"
+    tiers_required:
+      - T1
+      - T2
+      - T4
+principals:
+  - id: russian-federation
+    name: Russian Federation
+    type: body
+    file: files/russian-federation.md
+    file_state: PRESENT
+    assembly_date: 2026-08-03
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-07-26
+        tolerance_days: 90
+        age_days: 10
+        staleness: within tolerance
+      T2:
+        status: FILLED
+        last_refresh: 2026-08-03
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+      T3:
+        status: FILLED
+        last_refresh: 2026-06-10
+        tolerance_days: 60
+        age_days: 56
+        staleness: within tolerance
+      T4:
+        status: FILLED
+        last_refresh: 2026-08-02
+        tolerance_days: 7
+        age_days: 3
+        staleness: within tolerance
+      T5:
+        status: FILLED
+        last_refresh: 2026-08-03
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+  - id: russian-federation--putin
+    name: Vladimir Vladimirovich Putin
+    type: person
+    file: files/russian-federation--putin.md
+    file_state: PRESENT
+    assembly_date: 2026-08-03
+    completeness: PENDING_PROBE
+    tiers:
+      T1:
+        status: FILLED
+        last_refresh: 2026-07-26
+        tolerance_days: 90
+        age_days: 10
+        staleness: within tolerance
+      T2:
+        status: FILLED
+        last_refresh: 2026-07-26
+        tolerance_days: 30
+        age_days: 10
+        staleness: within tolerance
+      T3:
+        status: THIN
+        last_refresh: 2026-06-10
+        tolerance_days: 60
+        age_days: 56
+        staleness: within tolerance
+      T4:
+        status: FILLED
+        last_refresh: 2026-08-02
+        tolerance_days: 7
+        age_days: 3
+        staleness: within tolerance
+      T5:
+        status: FILLED
+        last_refresh: 2026-08-03
+        tolerance_days: 30
+        age_days: 2
+        staleness: within tolerance
+  - id: ukraine
+    name: Ukraine
+    type: body
+    file: files/ukraine.md
+    file_state: ABSENT
+    tiers:
+      T1:
+        status: NOT_GATHERED
+      T2:
+        status: NOT_GATHERED
+      T3:
+        status: NOT_GATHERED
+      T4:
+        status: NOT_GATHERED
+      T5:
+        status: NOT_GATHERED
+  - id: ukraine--zelensky
+    name: Volodymyr Oleksandrovych Zelensky
+    type: person
+    file: files/ukraine--zelensky.md
+    file_state: ABSENT
+    tiers:
+      T1:
+        status: NOT_GATHERED
+      T2:
+        status: NOT_GATHERED
+      T3:
+        status: NOT_GATHERED
+      T4:
+        status: NOT_GATHERED
+      T5:
+        status: NOT_GATHERED
+  - id: united-states
+    name: United States
+    type: body
+    file: files/united-states.md
+    file_state: ABSENT
+    tiers:
+      T1:
+        status: NOT_GATHERED
+      T2:
+        status: NOT_GATHERED
+      T3:
+        status: NOT_GATHERED
+      T4:
+        status: NOT_GATHERED
+      T5:
+        status: NOT_GATHERED
+generated_by: harness.py, by rule; PASS/HOLD is not an opinion
+note: A file's silence means NOT GATHERED, never "nothing there." Horus certifies nothing; files are graded by owner probing.
