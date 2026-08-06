@@ -1,0 +1,56 @@
+record_type: horus_board_roster
+board: ukraine
+version: 1.0.0
+status: PROPOSED_PENDING_OWNER_RATIFICATION
+assembled: 2026-08-05
+board_type: war
+
+principle: >-
+  A board names the principals whose files must exist before any minister reasons
+  on it. Naming the roster is a scope act, not a judgment: it says who is on the
+  board, never what any of them is doing. Persons and bodies are never merged.
+
+roster:
+  - id: russian-federation
+    name: Russian Federation
+    type: body
+    file: files/russian-federation.md
+  - id: russian-federation--putin
+    name: Vladimir Vladimirovich Putin
+    type: person
+    file: files/russian-federation--putin.md
+  - id: ukraine
+    name: Ukraine
+    type: body
+    file: files/ukraine.md
+  - id: ukraine--zelensky
+    name: Volodymyr Oleksandrovych Zelensky
+    type: person
+    file: files/ukraine--zelensky.md
+  - id: united-states
+    name: United States
+    type: body
+    file: files/united-states.md
+
+decay_tolerance_days:
+  note: >-
+    Charter defaults. T4 is 7 days because this is a war board. The owner may
+    override per board; these are not overridden.
+  T1: 90
+  T2: 30
+  T3: 60
+  T4: 7
+  T5: 30
+
+gate_rule: >-
+  PASS only if all principals' files exist with T1, T2, and T4 FILLED and within
+  tolerance. Otherwise HOLD, with the gaps named.
+
+history: >-
+  This is the board of the second failed proving run. A minister analyzed it with
+  the Western file thick and the Russian file built from residue and others'
+  accounts; the Kremlin's own 3 July transcript, the May-June command
+  appointments, and the Kyiv commander change under protest were public and
+  absent, and every resulting judgment inverted on contact with the field. The
+  Russian files were gathered at the founding of Horus on 3 August 2026. The rest
+  of the board has not been gathered.
