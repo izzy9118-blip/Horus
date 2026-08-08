@@ -21,11 +21,23 @@ query_contract:
   response_schema: contracts/horus-query-response.schema.json
   response_schema_version: 1.2.0
   predecessor_response_schema: contracts/horus-query-response.schema.v1.1.0.json
-  accepted_query_prefixes: [MHQ, MHAQ]
-  required_response_states: [GATHERED, PARTIALLY_GATHERED, NOT_GATHERED]
+  accepted_query_prefixes:
+    - MHQ
+    - MHAQ
+  required_response_states:
+    - GATHERED
+    - PARTIALLY_GATHERED
+    - NOT_GATHERED
   source_absence_taxonomy: HORUS-SOURCE-STATE-1.0
-  returned_evidence_states: [SUPPORTED, CONTRADICTORY_RECORD, DOCUMENTED_ABSENCE]
-  unresolved_evidence_states: [NOT_SEARCHED, SEARCHED_NOT_FOUND, SOURCE_EXISTS_NOT_ACQUIRED, SOURCE_ACQUIRED_INCOMPLETE]
+  returned_evidence_states:
+    - SUPPORTED
+    - CONTRADICTORY_RECORD
+    - DOCUMENTED_ABSENCE
+  unresolved_evidence_states:
+    - NOT_SEARCHED
+    - SEARCHED_NOT_FOUND
+    - SOURCE_EXISTS_NOT_ACQUIRED
+    - SOURCE_ACQUIRED_INCOMPLETE
   completeness: PENDING_PROBE
   source_selection_rule: HORUS_RETAINS_SOURCE_SELECTION_INDEPENDENCE_EXCEPT_EXPLICIT_DOCUMENT_REQUESTS
   required_source_disclosure:
@@ -41,39 +53,70 @@ charter_amendments:
     name: the language tooth
     date: 2026-08-06
     status: RATIFIED_BY_OWNER
-    ratification: {date: 2026-08-08, authority: REPOSITORY_OWNER_DIRECTIVE, directive: "Let’s ratify everything"}
-    amends: ["charter.md, T1 tier definition", "charter.md, the file header standard", "charter.md, the parity gate"]
+    amends:
+      - charter.md, T1 tier definition
+      - charter.md, the file header standard
+      - charter.md, the parity gate
     effect: >-
-      T1 is FILLED only on original-language primary matter. Translations are admissible as marked supplements and do not fill the tier. The parity manifest records per-principal T1 language and language state, and a T1 declared FILLED on translation alone is recorded as a gap.
+      T1 is FILLED only on original-language primary matter. Translations are
+      admissible as marked supplements and do not fill the tier. The parity
+      manifest records per-principal T1 language and language state, and a T1
+      declared FILLED on translation alone is recorded as a gap.
     rationale: >-
-      Three consecutive proving-run inversions - Iran once, Russia twice - each traced to a principal heard only through English or derivative sources. The reading inverted each time the original-language record arrived.
+      Three consecutive proving-run inversions - Iran once, Russia twice - each
+      traced to a principal heard only through English or derivative sources. The
+      reading inverted each time the original-language record arrived.
   - id: HORUS-AMD-002
     name: minister-directed gathering with source provenance
     date: 2026-08-07
     status: RATIFIED_BY_OWNER
-    ratification: {date: 2026-08-08, authority: REPOSITORY_OWNER_DIRECTIVE, directive: "Let’s ratify everything"}
-    amends: ["charter.md, minister queries", "charter.md, source-selection boundary", "charter.md, provenance return requirements"]
+    amends:
+      - charter.md, minister queries
+      - charter.md, source-selection boundary
+      - charter.md, provenance return requirements
     effect: >-
-      Every reasoned ministerial run must make an attributable request to Horus. The minister states what it needs to know and what would count as adequate evidence. Horus retains source-selection independence except for explicit document requests and returns the complete searched, used, rejected, and unfilled source trail with completeness PENDING_PROBE.
+      Every reasoned ministerial run must make an attributable request to Horus.
+      The minister states what it needs to know and what would count as adequate
+      evidence. Horus retains source-selection independence except for explicit
+      document requests and returns the complete searched, used, rejected, and
+      unfilled source trail with completeness PENDING_PROBE.
     rationale: >-
-      Ministers require a hard investigative interface rather than a soft prose permission to query. The interface must increase ministerial intelligence without recreating the failed condition in which the judge silently lays its own ground.
+      Ministers require a hard investigative interface rather than a soft prose
+      permission to query. The interface must increase ministerial intelligence
+      without recreating the failed condition in which the judge silently lays
+      its own ground.
   - id: HORUS-AMD-003
     name: adversarial gathering before final judgment
     date: 2026-08-08
     status: RATIFIED_BY_OWNER
-    ratification: {date: 2026-08-08, authority: REPOSITORY_OWNER_DIRECTIVE, directive: "Let’s ratify everything"}
-    amends: ["charter.md, adversarial gathering", "contracts/horus-query-response.schema.json"]
+    amends:
+      - charter.md, adversarial gathering
+      - contracts/horus-query-response.schema.json
     effect: >-
-      After a minister states a provisional judgment and what documentary ground could weaken, qualify, or overturn each proposition, Horus must receive a distinct MHAQ adversarial request and gather responsive ground before final reasoned judgment. Horus remains a gatherer and never decides whether the returned material defeats the proposition.
+      After a minister states a provisional judgment and what documentary ground
+      could weaken, qualify, or overturn each proposition, Horus must receive a
+      distinct MHAQ adversarial request and gather responsive ground before final
+      reasoned judgment. Horus remains a gatherer and never decides whether the
+      returned material defeats the proposition.
     rationale: >-
-      A general instruction to seek disconfirming evidence is too soft. The Assembly needs an auditable hard call that exposes provisional judgment to contrary or complicating ground while preserving Horus source-selection independence and the rule that NOT_GATHERED is not confirmation.
+      A general instruction to seek disconfirming evidence is too soft. The
+      Assembly needs an auditable hard call that exposes provisional judgment to
+      contrary or complicating ground while preserving Horus source-selection
+      independence and the rule that NOT_GATHERED is not confirmation.
   - id: HORUS-AMD-004
     name: source-absence taxonomy
     date: 2026-08-08
     status: RATIFIED_BY_OWNER
-    ratification: {date: 2026-08-08, authority: REPOSITORY_OWNER_DIRECTIVE, directive: "Let’s ratify everything"}
-    amends: ["charter.md, source-absence taxonomy", "contracts/horus-query-response.schema.json"]
+    amends:
+      - charter.md, source-absence taxonomy
+      - contracts/horus-query-response.schema.json
     effect: >-
-      Every returned or unresolved information need carries an explicit epistemic state. Search failure, inaccessible sources, incomplete acquisition, contradictory records, and positively documented absence are machine-distinct. DOCUMENTED_ABSENCE requires positive source ground; unresolved states may never assert absence.
+      Every returned or unresolved information need carries an explicit epistemic
+      state. Search failure, inaccessible sources, incomplete acquisition,
+      contradictory records, and positively documented absence are machine-distinct.
+      DOCUMENTED_ABSENCE requires positive source ground; unresolved states may
+      never assert absence.
     rationale: >-
-      An AI system must not convert ignorance into negative evidence. The state of the search and the state of the world are separate facts and must remain so in the record.
+      An AI system must not convert ignorance into negative evidence. The state of
+      the search and the state of the world are separate facts and must remain so
+      in the record.
