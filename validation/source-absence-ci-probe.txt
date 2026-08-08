@@ -1,0 +1,2 @@
+Validation-only probe for the Horus Source-Absence Taxonomy workflow.
+No governing artifact or runtime behavior is changed.
