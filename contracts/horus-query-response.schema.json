@@ -5,11 +5,7 @@
   "description": "Forward provenance-bearing Horus response with explicit epistemic source states. Missing ground is never silently converted into documented absence.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "record_type", "query_id", "requesting_minister", "request_as_received", "status",
-    "source_absence_taxonomy", "sources_searched", "sources_used", "sources_rejected",
-    "records_returned", "unfilled_requests", "provenance", "completeness"
-  ],
+  "required": ["record_type", "query_id", "requesting_minister", "request_as_received", "status", "source_absence_taxonomy", "sources_searched", "sources_used", "sources_rejected", "records_returned", "unfilled_requests", "provenance", "completeness"],
   "properties": {
     "record_type": {"const": "horus_query_response"},
     "query_id": {"type": "string", "pattern": "^(MHQ|MHAQ)-[A-Z0-9_-]+$"},
@@ -19,15 +15,7 @@
     "source_absence_taxonomy": {"const": "HORUS-SOURCE-STATE-1.0"},
     "sources_searched": {"type": "array", "items": {"$ref": "#/$defs/source_record"}},
     "sources_used": {"type": "array", "items": {"$ref": "#/$defs/source_record"}},
-    "sources_rejected": {
-      "type": "array",
-      "items": {
-        "allOf": [
-          {"$ref": "#/$defs/source_record"},
-          {"type": "object", "required": ["rejection_reason"], "properties": {"rejection_reason": {"type": "string", "minLength": 1}}}
-        ]
-      }
-    },
+    "sources_rejected": {"type": "array", "items": {"$ref": "#/$defs/rejected_source_record"}},
     "records_returned": {
       "type": "array",
       "items": {
@@ -46,8 +34,14 @@
           "language_state": {"enum": ["ORIGINAL", "TRANSLATION_ONLY", "NONE", "NOT_APPLICABLE"]}
         },
         "allOf": [{
-          "if": {"properties": {"evidence_state": {"const": "DOCUMENTED_ABSENCE"}}},
-          "then": {"required": ["absence_scope", "absence_basis"]},
+          "if": {"properties": {"evidence_state": {"const": "DOCUMENTED_ABSENCE"}}, "required": ["evidence_state"]},
+          "then": {
+            "required": ["absence_scope", "absence_basis"],
+            "properties": {
+              "absence_scope": {"type": "string", "minLength": 1},
+              "absence_basis": {"type": "string", "minLength": 1}
+            }
+          },
           "else": {
             "properties": {
               "absence_scope": {"type": "null"},
@@ -70,13 +64,11 @@
           "searched_source_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
           "absence_claim": {"const": false}
         },
-        "allOf": [
-          {
-            "if": {"properties": {"evidence_state": {"const": "NOT_SEARCHED"}}},
-            "then": {"properties": {"searched_source_refs": {"maxItems": 0}}},
-            "else": {"properties": {"searched_source_refs": {"minItems": 1}}}
-          }
-        ]
+        "allOf": [{
+          "if": {"properties": {"evidence_state": {"const": "NOT_SEARCHED"}}, "required": ["evidence_state"]},
+          "then": {"properties": {"searched_source_refs": {"maxItems": 0}}},
+          "else": {"properties": {"searched_source_refs": {"minItems": 1}}}
+        }]
       }
     },
     "provenance": {
@@ -108,6 +100,25 @@
         "repository_path": {"type": ["string", "null"]},
         "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
         "relevant_locator": {"type": ["string", "null"]}
+      }
+    },
+    "rejected_source_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_ref", "document_identity", "issuer", "date", "source_tier", "retrieval_date", "rejection_reason"],
+      "properties": {
+        "source_ref": {"type": "string", "minLength": 1},
+        "document_identity": {"type": "string", "minLength": 1},
+        "url": {"type": ["string", "null"]},
+        "issuer": {"type": "string", "minLength": 1},
+        "date": {"type": ["string", "null"]},
+        "language": {"type": ["string", "null"]},
+        "source_tier": {"enum": ["T1", "T2", "T3", "T4", "T5"]},
+        "retrieval_date": {"type": "string", "format": "date"},
+        "repository_path": {"type": ["string", "null"]},
+        "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "relevant_locator": {"type": ["string", "null"]},
+        "rejection_reason": {"type": "string", "minLength": 1}
       }
     }
   }
