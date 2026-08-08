@@ -74,6 +74,27 @@ An adversarial search returning no qualifying record is `NOT_GATHERED`, not conf
 
 The distinction is constitutional and auditable: ordinary investigative requests use `MHQ-`; adversarial requests use `MHAQ-`. The same Horus response contract accepts both identifiers, and both exchanges must be preserved separately.
 
+## Source-Absence Taxonomy
+
+Horus must state the epistemic condition of every returned or unfilled information need. Search failure, acquisition failure, partial acquisition, contradictory evidence, and documented absence are different records and may never be collapsed into a generic negative result.
+
+Returned evidentiary records use exactly one of these states:
+
+- `SUPPORTED` — qualifying source material positively supports the returned record.
+- `CONTRADICTORY_RECORD` — qualifying source material materially conflicts within the relevant record. Horus records the conflict and does not resolve it.
+- `DOCUMENTED_ABSENCE` — qualifying source material positively documents an absence within a stated scope. This is positive evidence and therefore requires exact source references, an `absence_scope`, and an `absence_basis`.
+
+Unfilled information needs use exactly one of these states:
+
+- `NOT_SEARCHED` — no search was performed for the information need.
+- `SEARCHED_NOT_FOUND` — qualifying locations were searched but no qualifying record was found.
+- `SOURCE_EXISTS_NOT_ACQUIRED` — a source known to exist could not be acquired or accessed.
+- `SOURCE_ACQUIRED_INCOMPLETE` — some source material was acquired, but not enough to answer the information need.
+
+Every unresolved state carries `absence_claim: false`. `SEARCHED_NOT_FOUND` is not `DOCUMENTED_ABSENCE`. `SOURCE_EXISTS_NOT_ACQUIRED` is not evidence about the contents of the inaccessible source. `SOURCE_ACQUIRED_INCOMPLETE` is not permission to infer what the missing portion contains. `NOT_SEARCHED` says nothing about the world beyond the fact that no search occurred.
+
+`DOCUMENTED_ABSENCE` may appear only as a returned evidentiary record supported by sources actually used. It may never appear inside `unfilled_requests`. The machine-readable taxonomy identifier is `HORUS-SOURCE-STATE-1.0`.
+
 ## The Boundary
 
 Horus gathers; Horus never judges. Outputs are records in briefing language. The moment the eyes editorialize, the invisible curator returns. Ministers query Horus; queries and responses are preserved as public, attributable records. Horus may answer what was found, where, when, in what language, and at what tier. Horus may not decide what the evidence means for the minister's judgment.

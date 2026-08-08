@@ -16,9 +16,11 @@ safeguards:
   - minister_queries_require_source_provenance
   - horus_retains_source_selection_independence
   - adversarial_queries_are_distinct_and_mandatory_before_final_reasoned_judgment
+  - source_absence_states_must_not_collapse
 query_contract:
   response_schema: contracts/horus-query-response.schema.json
-  response_schema_version: 1.1.0
+  response_schema_version: 1.2.0
+  predecessor_response_schema: contracts/horus-query-response.schema.v1.1.0.json
   accepted_query_prefixes:
     - MHQ
     - MHAQ
@@ -26,6 +28,16 @@ query_contract:
     - GATHERED
     - PARTIALLY_GATHERED
     - NOT_GATHERED
+  source_absence_taxonomy: HORUS-SOURCE-STATE-1.0
+  returned_evidence_states:
+    - SUPPORTED
+    - CONTRADICTORY_RECORD
+    - DOCUMENTED_ABSENCE
+  unresolved_evidence_states:
+    - NOT_SEARCHED
+    - SEARCHED_NOT_FOUND
+    - SOURCE_EXISTS_NOT_ACQUIRED
+    - SOURCE_ACQUIRED_INCOMPLETE
   completeness: PENDING_PROBE
   source_selection_rule: HORUS_RETAINS_SOURCE_SELECTION_INDEPENDENCE_EXCEPT_EXPLICIT_DOCUMENT_REQUESTS
   required_source_disclosure:
@@ -91,3 +103,20 @@ charter_amendments:
       Assembly needs an auditable hard call that exposes provisional judgment to
       contrary or complicating ground while preserving Horus source-selection
       independence and the rule that NOT_GATHERED is not confirmation.
+  - id: HORUS-AMD-004
+    name: source-absence taxonomy
+    date: 2026-08-08
+    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    amends:
+      - charter.md, source-absence taxonomy
+      - contracts/horus-query-response.schema.json
+    effect: >-
+      Every returned or unresolved information need carries an explicit epistemic
+      state. Search failure, inaccessible sources, incomplete acquisition,
+      contradictory records, and positively documented absence are machine-distinct.
+      DOCUMENTED_ABSENCE requires positive source ground; unresolved states may
+      never assert absence.
+    rationale: >-
+      An AI system must not convert ignorance into negative evidence. The state of
+      the search and the state of the world are separate facts and must remain so
+      in the record.
