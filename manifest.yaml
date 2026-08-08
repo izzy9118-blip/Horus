@@ -52,7 +52,7 @@ charter_amendments:
   - id: HORUS-AMD-001
     name: the language tooth
     date: 2026-08-06
-    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    status: RATIFIED_BY_OWNER
     amends:
       - charter.md, T1 tier definition
       - charter.md, the file header standard
@@ -69,7 +69,7 @@ charter_amendments:
   - id: HORUS-AMD-002
     name: minister-directed gathering with source provenance
     date: 2026-08-07
-    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    status: RATIFIED_BY_OWNER
     amends:
       - charter.md, minister queries
       - charter.md, source-selection boundary
@@ -88,7 +88,7 @@ charter_amendments:
   - id: HORUS-AMD-003
     name: adversarial gathering before final judgment
     date: 2026-08-08
-    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    status: RATIFIED_BY_OWNER
     amends:
       - charter.md, adversarial gathering
       - contracts/horus-query-response.schema.json
@@ -106,7 +106,7 @@ charter_amendments:
   - id: HORUS-AMD-004
     name: source-absence taxonomy
     date: 2026-08-08
-    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    status: RATIFIED_BY_OWNER
     amends:
       - charter.md, source-absence taxonomy
       - contracts/horus-query-response.schema.json
