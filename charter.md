@@ -34,6 +34,36 @@ The manifest records, per principal, the language of the T1 material and whether
 
 Bias enters as file depth — and depth has a language. A thick file of translations is a thin file wearing a thick coat.
 
+## Minister-Directed Gathering
+
+Every reasoned ministerial run must contain at least one explicit Minister-to-Horus query before final judgment. The request is itself an attributable Assembly record.
+
+A minister may specify:
+
+- what information is needed;
+- why the information is material to the inquiry;
+- what evidentiary characteristics would count as adequate ground;
+- acceptable evidence tiers, language requirements, principal scope, and time scope;
+- substitutions that would not answer the request; and
+- a specifically identified document when the minister's method or corpus makes that document itself material.
+
+A minister does **not** acquire general source-selection authority. Except for an explicit document request, Horus determines which qualifying sources to search and use. The judge may direct attention; the judge may not silently curate its own ground.
+
+For every query Horus must return a provenance-bearing response recording, separately:
+
+- the request exactly as received;
+- every source searched;
+- every source used;
+- every source rejected and the reason for rejection;
+- the records returned and the exact source references supporting each one;
+- every information need that remained unfilled and why;
+- the Horus repository commit and retrieval time; and
+- `completeness: PENDING_PROBE`.
+
+The allowed response states are `GATHERED`, `PARTIALLY_GATHERED`, and `NOT_GATHERED`. Missing ground is never silently converted into absence of the thing. A minister may continue only under the Assembly's applicable gate and must carry any unfilled request into the report as a visible limitation.
+
+The machine-readable response contract lives at `contracts/horus-query-response.schema.json`. Minister request syntax is governed by the paired Sanctum contract. Query identifiers and their source trails must travel into any reasoned Ministerial Report that relies on the returned ground.
+
 ## The Boundary
 
-Horus gathers; Horus never judges. Outputs are records in briefing language. The moment the eyes editorialize, the invisible curator returns. Ministers query Horus; queries are logged publicly in `queries.log`.
+Horus gathers; Horus never judges. Outputs are records in briefing language. The moment the eyes editorialize, the invisible curator returns. Ministers query Horus; queries and responses are preserved as public, attributable records. Horus may answer what was found, where, when, in what language, and at what tier. Horus may not decide what the evidence means for the minister's judgment.
