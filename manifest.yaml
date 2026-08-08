@@ -15,8 +15,13 @@ safeguards:
   - original_language_t1_required
   - minister_queries_require_source_provenance
   - horus_retains_source_selection_independence
+  - adversarial_queries_are_distinct_and_mandatory_before_final_reasoned_judgment
 query_contract:
   response_schema: contracts/horus-query-response.schema.json
+  response_schema_version: 1.1.0
+  accepted_query_prefixes:
+    - MHQ
+    - MHAQ
   required_response_states:
     - GATHERED
     - PARTIALLY_GATHERED
@@ -68,3 +73,21 @@ charter_amendments:
       permission to query. The interface must increase ministerial intelligence
       without recreating the failed condition in which the judge silently lays
       its own ground.
+  - id: HORUS-AMD-003
+    name: adversarial gathering before final judgment
+    date: 2026-08-08
+    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    amends:
+      - charter.md, adversarial gathering
+      - contracts/horus-query-response.schema.json
+    effect: >-
+      After a minister states a provisional judgment and what documentary ground
+      could weaken, qualify, or overturn each proposition, Horus must receive a
+      distinct MHAQ adversarial request and gather responsive ground before final
+      reasoned judgment. Horus remains a gatherer and never decides whether the
+      returned material defeats the proposition.
+    rationale: >-
+      A general instruction to seek disconfirming evidence is too soft. The
+      Assembly needs an auditable hard call that exposes provisional judgment to
+      contrary or complicating ground while preserving Horus source-selection
+      independence and the rule that NOT_GATHERED is not confirmation.

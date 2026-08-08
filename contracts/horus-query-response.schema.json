@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:horus:query-response:1.0.0",
+  "$id": "urn:horus:query-response:1.1.0",
   "title": "Horus Query Response",
+  "description": "Provenance-bearing response for both ordinary investigative MHQ requests and adversarial MHAQ requests. Horus gathers and does not judge whether adversarial evidence defeats a proposition.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,7 +21,7 @@
   ],
   "properties": {
     "record_type": {"const": "horus_query_response"},
-    "query_id": {"type": "string", "pattern": "^MHQ-[A-Z0-9_-]+$"},
+    "query_id": {"type": "string", "pattern": "^(MHQ|MHAQ)-[A-Z0-9_-]+$"},
     "requesting_minister": {"type": "string", "minLength": 1},
     "request_as_received": {"type": "object"},
     "status": {"enum": ["GATHERED", "PARTIALLY_GATHERED", "NOT_GATHERED"]},

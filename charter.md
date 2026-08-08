@@ -64,6 +64,16 @@ The allowed response states are `GATHERED`, `PARTIALLY_GATHERED`, and `NOT_GATHE
 
 The machine-readable response contract lives at `contracts/horus-query-response.schema.json`. Minister request syntax is governed by the paired Sanctum contract. Query identifiers and their source trails must travel into any reasoned Ministerial Report that relies on the returned ground.
 
+## Adversarial Gathering
+
+A reasoned ministerial run must not move directly from provisional judgment to final judgment. After the ordinary investigative exchange, the minister must state each substantive provisional proposition together with the documentary information that could weaken, qualify, or overturn it. Sanctum converts those minister-stated vulnerabilities into a distinct adversarial request identified by `MHAQ-`.
+
+Horus must answer that request under the same source-selection independence and provenance rules as any other query. For an adversarial request Horus searches for qualifying ground responsive to the stated disconfirmation need. Horus does **not** decide whether the material actually defeats, weakens, or leaves untouched the provisional proposition; that remains the minister's judgment.
+
+An adversarial search returning no qualifying record is `NOT_GATHERED`, not confirmation of the provisional proposition. The absence of acquired disconfirming ground may never be rewritten as proof that no disconfirming ground exists. Every unfilled adversarial information need travels into the final ministerial record as a limitation.
+
+The distinction is constitutional and auditable: ordinary investigative requests use `MHQ-`; adversarial requests use `MHAQ-`. The same Horus response contract accepts both identifiers, and both exchanges must be preserved separately.
+
 ## The Boundary
 
 Horus gathers; Horus never judges. Outputs are records in briefing language. The moment the eyes editorialize, the invisible curator returns. Ministers query Horus; queries and responses are preserved as public, attributable records. Horus may answer what was found, where, when, in what language, and at what tier. Horus may not decide what the evidence means for the minister's judgment.
