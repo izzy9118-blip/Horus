@@ -13,6 +13,24 @@ safeguards:
   - decay_enforced
   - queries_logged
   - original_language_t1_required
+  - minister_queries_require_source_provenance
+  - horus_retains_source_selection_independence
+query_contract:
+  response_schema: contracts/horus-query-response.schema.json
+  required_response_states:
+    - GATHERED
+    - PARTIALLY_GATHERED
+    - NOT_GATHERED
+  completeness: PENDING_PROBE
+  source_selection_rule: HORUS_RETAINS_SOURCE_SELECTION_INDEPENDENCE_EXCEPT_EXPLICIT_DOCUMENT_REQUESTS
+  required_source_disclosure:
+    - sources_searched
+    - sources_used
+    - sources_rejected_with_reason
+    - records_returned_with_source_refs
+    - unfilled_requests_with_reason
+    - horus_repository_commit
+    - retrieval_time
 charter_amendments:
   - id: HORUS-AMD-001
     name: the language tooth
@@ -31,3 +49,22 @@ charter_amendments:
       Three consecutive proving-run inversions - Iran once, Russia twice - each
       traced to a principal heard only through English or derivative sources. The
       reading inverted each time the original-language record arrived.
+  - id: HORUS-AMD-002
+    name: minister-directed gathering with source provenance
+    date: 2026-08-07
+    status: PROPOSED_PENDING_OWNER_RATIFICATION
+    amends:
+      - charter.md, minister queries
+      - charter.md, source-selection boundary
+      - charter.md, provenance return requirements
+    effect: >-
+      Every reasoned ministerial run must make an attributable request to Horus.
+      The minister states what it needs to know and what would count as adequate
+      evidence. Horus retains source-selection independence except for explicit
+      document requests and returns the complete searched, used, rejected, and
+      unfilled source trail with completeness PENDING_PROBE.
+    rationale: >-
+      Ministers require a hard investigative interface rather than a soft prose
+      permission to query. The interface must increase ministerial intelligence
+      without recreating the failed condition in which the judge silently lays
+      its own ground.
