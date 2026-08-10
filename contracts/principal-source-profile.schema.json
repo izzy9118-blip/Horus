@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:horus:principal-source-profile:1.0.0",
+  "title": "Horus Principal Source Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_type", "version", "principal_id", "principal_name", "principal_type", "aliases", "original_languages", "timezone", "calendars", "channels", "completeness"],
+  "properties": {
+    "record_type": {"const": "horus_principal_source_profile"},
+    "version": {"const": "1.0.0"},
+    "principal_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "principal_name": {"type": "string", "minLength": 1},
+    "principal_type": {"enum": ["person", "body"]},
+    "aliases": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "original_languages": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 2}, "uniqueItems": true},
+    "timezone": {"type": "string", "minLength": 1},
+    "calendars": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role"],
+        "properties": {
+          "id": {"enum": ["gregorian", "solar_hijri"]},
+          "role": {"enum": ["canonical", "local", "supplemental"]}
+        }
+      }
+    },
+    "channels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["channel_id", "name", "base_url", "channel_class", "languages", "supported_methods"],
+        "properties": {
+          "channel_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "base_url": {"type": "string", "format": "uri"},
+          "channel_class": {"enum": ["PRIMARY", "ALTERNATE_PRIMARY", "DIPLOMATIC_PRIMARY", "OFFICIAL_MIRROR"]},
+          "languages": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 2}, "uniqueItems": true},
+          "supported_methods": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"enum": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"]},
+            "uniqueItems": true
+          },
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "non_t1_classes": {
+      "type": "array",
+      "items": {"enum": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"]},
+      "uniqueItems": true,
+      "default": []
+    },
+    "completeness": {"const": "PENDING_PROBE"}
+  }
+}
