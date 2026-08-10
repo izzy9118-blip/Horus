@@ -1,0 +1,44 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "united-states",
+  "principal_name": "United States",
+  "principal_type": "body",
+  "aliases": ["United States", "United States of America", "USA", "US", "U.S."],
+  "original_languages": ["en"],
+  "timezone": "America/New_York",
+  "calendars": [
+    {"id": "gregorian", "role": "canonical"}
+  ],
+  "channels": [
+    {
+      "channel_id": "whitehouse-gov",
+      "name": "The White House",
+      "base_url": "https://www.whitehouse.gov/",
+      "channel_class": "PRIMARY",
+      "languages": ["en"],
+      "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "First-party presidential statements, briefings, fact sheets and presidential actions."
+    },
+    {
+      "channel_id": "state-gov",
+      "name": "U.S. Department of State",
+      "base_url": "https://www.state.gov/",
+      "channel_class": "ALTERNATE_PRIMARY",
+      "languages": ["en"],
+      "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "First-party foreign-policy statements, press briefings, releases and diplomatic records."
+    },
+    {
+      "channel_id": "usun-usmission-gov",
+      "name": "U.S. Mission to the United Nations",
+      "base_url": "https://usun.usmission.gov/",
+      "channel_class": "DIPLOMATIC_PRIMARY",
+      "languages": ["en"],
+      "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "First-party diplomatic-mission channel for United Nations statements and records."
+    }
+  ],
+  "non_t1_classes": ["INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}
