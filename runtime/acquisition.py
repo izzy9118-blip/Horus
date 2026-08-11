@@ -67,6 +67,14 @@ def _date_scope(query: dict[str, Any]) -> list[str]:
     return dates
 
 
+def _resolved_profiles(query: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    profiles: dict[str, dict[str, Any]] = {}
+    for principal in query.get("principal_scope") or []:
+        profile, _, _ = resolve_principal(principal)
+        profiles[profile["principal_id"]] = profile
+    return profiles
+
+
 def build_plan(query: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(query, dict):
         raise AcquisitionProtocolError("query must be an object")
@@ -139,17 +147,50 @@ def _validate_attempt(attempt: dict[str, Any]) -> None:
         raise AcquisitionProtocolError(f"invalid search method: {attempt['search_method']}")
 
 
+def _validate_attempt_against_registry(
+    attempt: dict[str, Any],
+    profiles: dict[str, dict[str, Any]],
+    original_t1: bool,
+) -> None:
+    if not profiles:
+        return
+    principal_id = attempt["principal_id"]
+    if principal_id not in profiles:
+        raise AcquisitionProtocolError(
+            f"search attempt principal {principal_id!r} is outside the query's pinned principal scope"
+        )
+    if attempt["search_method"] == "SECONDARY_DISCOVERY":
+        return
+    profile = profiles[principal_id]
+    channel = next((c for c in profile.get("channels", []) if c.get("channel_id") == attempt["channel_id"]), None)
+    if channel is None:
+        raise AcquisitionProtocolError(
+            f"search attempt channel {attempt['channel_id']!r} is not registered for principal {principal_id!r}"
+        )
+    if attempt["search_method"] not in channel.get("supported_methods", []):
+        raise AcquisitionProtocolError(
+            f"search method {attempt['search_method']!r} is not registered for channel {attempt['channel_id']!r}"
+        )
+    if original_t1 and attempt["language"] not in profile.get("original_languages", []):
+        raise AcquisitionProtocolError(
+            f"original-language T1 attempt for {principal_id!r} used unregistered language {attempt['language']!r}"
+        )
+
+
 def build_receipt(query: dict[str, Any], attempts: list[dict[str, Any]], mode: str = "LIVE") -> dict[str, Any]:
     if mode not in {"LIVE", "FIXTURE"}:
         raise AcquisitionProtocolError("acquisition runtime mode must be LIVE or FIXTURE")
     plan = build_plan(query)
     if not isinstance(attempts, list):
         raise AcquisitionProtocolError("search attempts must be a list")
+    profiles = _resolved_profiles(query)
+    original_t1 = _needs_original_t1(query)
     ids: set[str] = set()
     for attempt in attempts:
         if not isinstance(attempt, dict):
             raise AcquisitionProtocolError("each search attempt must be an object")
         _validate_attempt(attempt)
+        _validate_attempt_against_registry(attempt, profiles, original_t1)
         if attempt["attempt_id"] in ids:
             raise AcquisitionProtocolError(f"duplicate attempt_id: {attempt['attempt_id']}")
         ids.add(attempt["attempt_id"])
