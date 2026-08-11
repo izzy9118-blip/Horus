@@ -1,0 +1,17 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "ukraine--zelensky",
+  "principal_name": "Volodymyr Oleksandrovych Zelensky",
+  "principal_type": "person",
+  "aliases": ["Volodymyr Zelensky", "Volodymyr Oleksandrovych Zelensky", "Володимир Олександрович Зеленський"],
+  "original_languages": ["uk"],
+  "timezone": "Europe/Kyiv",
+  "calendars": [{"id": "gregorian", "role": "local"}],
+  "channels": [
+    {"channel_id": "president-gov-ua", "name": "President of Ukraine", "base_url": "https://www.president.gov.ua/", "channel_class": "PRIMARY", "languages": ["uk"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Principal's own presidential addresses, statements and acts; prior 403 responses must remain visible as acquisition failures."},
+    {"channel_id": "zakon-rada-gov-ua", "name": "Legislation of Ukraine", "base_url": "https://zakon.rada.gov.ua/", "channel_class": "OFFICIAL_MIRROR", "languages": ["uk"], "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Official promulgated register for signed presidential decrees; does not substitute for a speech if the speech itself is material."}
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}

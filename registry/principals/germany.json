@@ -1,0 +1,18 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "germany",
+  "principal_name": "Federal Republic of Germany",
+  "principal_type": "body",
+  "aliases": ["Germany", "Federal Republic of Germany", "Bundesrepublik Deutschland"],
+  "original_languages": ["de"],
+  "timezone": "Europe/Berlin",
+  "calendars": [{"id": "gregorian", "role": "local"}],
+  "channels": [
+    {"channel_id": "bundesregierung-de", "name": "Federal Government of Germany", "base_url": "https://www.bundesregierung.de/", "channel_class": "PRIMARY", "languages": ["de"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "First-party Federal Government statements, bulletins and press conferences."},
+    {"channel_id": "auswaertiges-amt-de", "name": "Federal Foreign Office", "base_url": "https://www.auswaertiges-amt.de/", "channel_class": "ALTERNATE_PRIMARY", "languages": ["de"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "First-party German foreign-policy channel."},
+    {"channel_id": "bundestag-de", "name": "German Bundestag", "base_url": "https://www.bundestag.de/", "channel_class": "OFFICIAL_MIRROR", "languages": ["de"], "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Official parliamentary record; usable as an official record of delivered government speech while remaining distinct from the executive's own channel."}
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}

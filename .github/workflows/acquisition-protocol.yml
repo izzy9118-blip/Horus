@@ -1,0 +1,38 @@
+name: Horus Deterministic Acquisition Protocol
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  acquisition:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install validation dependencies
+        run: python -m pip install jsonschema pytest
+      - name: Parse acquisition contracts and principal profiles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          paths = [
+              Path('contracts/horus-query-response.schema.json'),
+              Path('contracts/horus-query-response.schema.v1.2.0.json'),
+              Path('contracts/principal-source-profile.schema.json'),
+              Path('contracts/acquisition-receipt.schema.json'),
+              Path('registry/principals/iran.json'),
+              Path('registry/principals/united-states.json'),
+          ]
+          for path in paths:
+              json.loads(path.read_text(encoding='utf-8'))
+          print('acquisition contracts parse')
+          PY
+      - name: Compile canonical acquisition runtime
+        run: python -m py_compile runtime/calendars.py runtime/source_registry.py runtime/acquisition.py runtime/gather.py
+      - name: Run acquisition and response regression tests
+        run: python -m pytest -q tests/test_acquisition_protocol.py tests/test_query_response_schema.py

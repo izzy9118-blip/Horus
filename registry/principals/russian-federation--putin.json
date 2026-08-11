@@ -1,0 +1,17 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "russian-federation--putin",
+  "principal_name": "Vladimir Vladimirovich Putin",
+  "principal_type": "person",
+  "aliases": ["Vladimir Putin", "Vladimir Vladimirovich Putin", "Владимир Владимирович Путин"],
+  "original_languages": ["ru"],
+  "timezone": "Europe/Moscow",
+  "calendars": [{"id": "gregorian", "role": "local"}],
+  "channels": [
+    {"channel_id": "kremlin-ru", "name": "President of Russia", "base_url": "http://kremlin.ru/", "channel_class": "PRIMARY", "languages": ["ru"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Principal's own presidential transcript and event channel."},
+    {"channel_id": "pravo-gov-ru", "name": "Official Publication of Legal Acts", "base_url": "http://publication.pravo.gov.ru/", "channel_class": "OFFICIAL_MIRROR", "languages": ["ru"], "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Official legal publication channel for signed presidential acts; not a substitute for speeches when the speech itself is material."}
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}

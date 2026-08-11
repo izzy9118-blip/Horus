@@ -23,6 +23,22 @@ def source():
     }
 
 
+def acquisition():
+    return {
+        "protocol": "HORUS-ACQUISITION-1.0",
+        "plan_sha256": "b" * 64,
+        "principal_profiles": [],
+        "date_normalizations": [],
+        "search_attempts": [],
+        "requirements": [],
+        "runtime": {
+            "engine": "HORUS_CANONICAL_ACQUISITION_ENGINE",
+            "engine_path": "runtime/gather.py",
+            "mode": "FIXTURE",
+        },
+    }
+
+
 def response():
     s = source()
     return {
@@ -32,6 +48,7 @@ def response():
         "request_as_received": {},
         "status": "GATHERED",
         "source_absence_taxonomy": "HORUS-SOURCE-STATE-1.0",
+        "acquisition": acquisition(),
         "sources_searched": [s],
         "sources_used": [s],
         "sources_rejected": [],
@@ -52,8 +69,14 @@ def response():
     }
 
 
-def test_schema_is_v1_2_0():
-    assert SCHEMA["$id"] == "urn:horus:query-response:1.2.0"
+def test_schema_is_v1_3_0():
+    assert SCHEMA["$id"] == "urn:horus:query-response:1.3.0"
+
+
+def test_acquisition_receipt_is_mandatory():
+    item = response()
+    del item["acquisition"]
+    assert list(Draft202012Validator(SCHEMA).iter_errors(item))
 
 
 def test_documented_absence_requires_positive_fields():
@@ -72,12 +95,31 @@ def test_unresolved_state_cannot_assert_absence():
         "information_need": "Was an appointment recorded?",
         "reason": "No qualifying record found",
         "evidence_state": "SEARCHED_NOT_FOUND",
-        "searched_source_refs": ["SRC-1"],
+        "searched_source_refs": [],
+        "searched_attempt_refs": ["ATT-1"],
         "absence_claim": True,
     }]
     assert list(Draft202012Validator(SCHEMA).iter_errors(item))
 
 
-def test_predecessor_contract_is_preserved():
-    old = json.loads((BASE / "contracts/horus-query-response.schema.v1.1.0.json").read_text(encoding="utf-8"))
-    assert old["$id"] == "urn:horus:query-response:1.1.0"
+def test_searched_not_found_requires_an_attempt_trace():
+    item = response()
+    item["status"] = "NOT_GATHERED"
+    item["sources_used"] = []
+    item["records_returned"] = []
+    item["unfilled_requests"] = [{
+        "information_need": "Was an appointment recorded?",
+        "reason": "No qualifying record found",
+        "evidence_state": "SEARCHED_NOT_FOUND",
+        "searched_source_refs": [],
+        "searched_attempt_refs": [],
+        "absence_claim": False,
+    }]
+    assert list(Draft202012Validator(SCHEMA).iter_errors(item))
+
+
+def test_predecessor_contracts_are_preserved():
+    v12 = json.loads((BASE / "contracts/horus-query-response.schema.v1.2.0.json").read_text(encoding="utf-8"))
+    v11 = json.loads((BASE / "contracts/horus-query-response.schema.v1.1.0.json").read_text(encoding="utf-8"))
+    assert v12["$id"] == "urn:horus:query-response:1.2.0"
+    assert v11["$id"] == "urn:horus:query-response:1.1.0"

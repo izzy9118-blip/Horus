@@ -1,0 +1,45 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "iran",
+  "principal_name": "Islamic Republic of Iran",
+  "principal_type": "body",
+  "aliases": ["Iran", "Islamic Republic of Iran", "جمهوری اسلامی ایران"],
+  "original_languages": ["fa"],
+  "timezone": "Asia/Tehran",
+  "calendars": [
+    {"id": "gregorian", "role": "canonical"},
+    {"id": "solar_hijri", "role": "local"}
+  ],
+  "channels": [
+    {
+      "channel_id": "president-ir",
+      "name": "Presidency of the Islamic Republic of Iran",
+      "base_url": "https://president.ir/",
+      "channel_class": "PRIMARY",
+      "languages": ["fa"],
+      "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "First-party presidential channel. A search-engine result pointing to this domain is only discovery; the acquired page itself must be verified as first-party primary matter."
+    },
+    {
+      "channel_id": "mfa-gov-ir",
+      "name": "Ministry of Foreign Affairs of the Islamic Republic of Iran",
+      "base_url": "https://mfa.gov.ir/",
+      "channel_class": "ALTERNATE_PRIMARY",
+      "languages": ["fa"],
+      "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "First-party state channel for foreign-policy statements, briefings and ministry records."
+    },
+    {
+      "channel_id": "geneva-mfa-ir",
+      "name": "Permanent Mission of the Islamic Republic of Iran in Geneva",
+      "base_url": "http://geneva.mfa.ir/",
+      "channel_class": "DIPLOMATIC_PRIMARY",
+      "languages": ["fa", "en"],
+      "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"],
+      "notes": "Official diplomatic-mission channel. English material is a supplement for a Persian T1 request unless the issuing record itself is originally English."
+    }
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}

@@ -95,6 +95,31 @@ Every unresolved state carries `absence_claim: false`. `SEARCHED_NOT_FOUND` is n
 
 `DOCUMENTED_ABSENCE` may appear only as a returned evidentiary record supported by sources actually used. It may never appear inside `unfilled_requests`. The machine-readable taxonomy identifier is `HORUS-SOURCE-STATE-1.0`.
 
+## Deterministic Primary-Source Acquisition
+
+A source gap may be reported only after the acquisition procedure that produced the gap is itself recorded. The absence of a search path is not the absence of a source.
+
+For any information need requiring original-language T1, Horus must resolve each named principal through the pinned Principal Source Registry before searching. The profile supplies the principal's original language, local timezone, relevant local calendar, first-party channels, alternate first-party channels, and first-party diplomatic channels. Search terms may vary with the inquiry; the required search procedure may not.
+
+Dates used to search a principal's archive are normalized by code, not by model recollection. The canonical Gregorian date and every required local-calendar rendering travel together in the acquisition receipt. A manually inferred calendar date does not satisfy the protocol.
+
+The minimum original-language T1 acquisition ladder is:
+
+1. `DIRECT_FIRST_PARTY_ARCHIVE` — search the principal's own dated archive or equivalent first-party publication record;
+2. `DIRECT_FIRST_PARTY_SITE_SEARCH` — search the principal's first-party channel in the principal's own language;
+3. `ALTERNATE_FIRST_PARTY_CHANNEL` — search an alternate first-party state, ministry, legal, or diplomatic channel appropriate to the principal;
+4. `FIRST_PARTY_DOMAIN_RECOVERY` — use broader discovery only to recover material on a registered first-party domain.
+
+Secondary reporting may be used for discovery after or alongside those steps, but a secondary account never fills T1 and never substitutes for a required first-party step. A discovered reference to an official statement is a lead to the primary record, not the primary record itself.
+
+Every attempted route is an acquisition record distinct from every documentary source. Horus records the principal, channel, search method, language, canonical date, local date, query, result, retrieval time, and any recovered source reference. `sources_searched` therefore records documentary sources; `search_attempts` records the acquisition procedure that may or may not have found a source.
+
+`SEARCHED_NOT_FOUND` is valid for an original-language T1 request only when every required ladder step was both attempted and reachable enough to return either `FOUND` or `NO_MATCH`. A blocked archive, unavailable endpoint, index error, timeout, or discovered-but-unacquired source prevents that state. The appropriate unresolved state remains an acquisition failure or incomplete acquisition, never an asserted negative.
+
+The canonical acquisition engine is `runtime/gather.py`. It computes the acquisition plan and receipt from the pinned Horus source registry. A host may execute searches and return raw attempt records, but it may not supply its own acquisition receipt, source-state floor, Horus commit, or completeness claim. If no executed acquisition trace is supplied, the canonical engine fails closed as `NOT_SEARCHED`.
+
+The machine-readable protocol identifier is `HORUS-ACQUISITION-1.0`. The principal profile contract lives at `contracts/principal-source-profile.schema.json`; the receipt contract lives at `contracts/acquisition-receipt.schema.json`.
+
 ## The Boundary
 
 Horus gathers; Horus never judges. Outputs are records in briefing language. The moment the eyes editorialize, the invisible curator returns. Ministers query Horus; queries and responses are preserved as public, attributable records. Horus may answer what was found, where, when, in what language, and at what tier. Horus may not decide what the evidence means for the minister's judgment.

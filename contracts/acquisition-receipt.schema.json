@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:horus:acquisition-receipt:1.0.0",
+  "title": "Horus Acquisition Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "plan_sha256", "principal_profiles", "date_normalizations", "search_attempts", "requirements", "runtime"],
+  "properties": {
+    "protocol": {"const": "HORUS-ACQUISITION-1.0"},
+    "plan_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "principal_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principal_id", "profile_path", "profile_sha256"],
+        "properties": {
+          "principal_id": {"type": "string", "minLength": 1},
+          "profile_path": {"type": "string", "minLength": 1},
+          "profile_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "date_normalizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principal_id", "canonical_date", "timezone", "calendar", "local_date"],
+        "properties": {
+          "principal_id": {"type": "string", "minLength": 1},
+          "canonical_date": {"type": "string", "format": "date"},
+          "timezone": {"type": "string", "minLength": 1},
+          "calendar": {"enum": ["gregorian", "solar_hijri"]},
+          "local_date": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "search_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["attempt_id", "information_need", "principal_id", "channel_id", "channel_class", "search_method", "language", "canonical_date", "local_date", "query", "result", "attempted_at"],
+        "properties": {
+          "attempt_id": {"type": "string", "pattern": "^ATT-[A-Z0-9_-]+$"},
+          "information_need": {"type": "string", "minLength": 1},
+          "principal_id": {"type": "string", "minLength": 1},
+          "channel_id": {"type": "string", "minLength": 1},
+          "channel_class": {"enum": ["PRIMARY", "ALTERNATE_PRIMARY", "DIPLOMATIC_PRIMARY", "OFFICIAL_MIRROR", "EXTERNAL_RECOVERY"]},
+          "search_method": {"enum": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY", "SECONDARY_DISCOVERY"]},
+          "language": {"type": "string", "minLength": 2},
+          "canonical_date": {"type": ["string", "null"], "format": "date"},
+          "local_date": {"type": ["string", "null"]},
+          "query": {"type": "string", "minLength": 1},
+          "url": {"type": ["string", "null"]},
+          "result": {"enum": ["FOUND", "NO_MATCH", "ACCESS_BLOCKED", "ENDPOINT_UNAVAILABLE", "INDEX_ERROR", "TIMEOUT", "SOURCE_DISCOVERED_NOT_ACQUIRED"]},
+          "source_ref": {"type": ["string", "null"]},
+          "detail": {"type": ["string", "null"]},
+          "attempted_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["information_need", "principal_id", "target_tier", "original_language_required", "required_steps", "completed_steps", "minimum_protocol_attempted", "minimum_protocol_satisfied"],
+        "properties": {
+          "information_need": {"type": "string", "minLength": 1},
+          "principal_id": {"type": "string", "minLength": 1},
+          "target_tier": {"enum": ["T1", "T2", "T3", "T4", "T5"]},
+          "original_language_required": {"type": "boolean"},
+          "required_steps": {"type": "array", "items": {"enum": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"]}, "uniqueItems": true},
+          "completed_steps": {"type": "array", "items": {"enum": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"]}, "uniqueItems": true},
+          "minimum_protocol_attempted": {"type": "boolean"},
+          "minimum_protocol_satisfied": {"type": "boolean"}
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "engine_path", "mode"],
+      "properties": {
+        "engine": {"const": "HORUS_CANONICAL_ACQUISITION_ENGINE"},
+        "engine_path": {"const": "runtime/gather.py"},
+        "mode": {"enum": ["LIVE", "FIXTURE"]}
+      }
+    }
+  }
+}

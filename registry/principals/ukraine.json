@@ -1,0 +1,18 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "ukraine",
+  "principal_name": "Ukraine",
+  "principal_type": "body",
+  "aliases": ["Ukraine", "Україна"],
+  "original_languages": ["uk"],
+  "timezone": "Europe/Kyiv",
+  "calendars": [{"id": "gregorian", "role": "local"}],
+  "channels": [
+    {"channel_id": "president-gov-ua", "name": "President of Ukraine", "base_url": "https://www.president.gov.ua/", "channel_class": "PRIMARY", "languages": ["uk"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "First-party presidential and state statement channel; prior Horus sailings recorded HTTP 403 from some hosts, which must remain an acquisition result rather than a negative finding."},
+    {"channel_id": "mfa-gov-ua", "name": "Ministry of Foreign Affairs of Ukraine", "base_url": "https://mfa.gov.ua/", "channel_class": "ALTERNATE_PRIMARY", "languages": ["uk"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "First-party foreign-policy channel."},
+    {"channel_id": "zakon-rada-gov-ua", "name": "Legislation of Ukraine", "base_url": "https://zakon.rada.gov.ua/", "channel_class": "OFFICIAL_MIRROR", "languages": ["uk"], "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Official promulgated legal register used when signed state instruments are material."}
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}

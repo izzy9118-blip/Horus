@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:horus:query-response:1.3.0",
+  "$id": "urn:horus:query-response:1.2.0",
   "title": "Horus Query Response",
-  "description": "Provenance-bearing Horus response with explicit source states and a deterministic acquisition receipt. A search gap is not valid unless the search procedure itself is recorded.",
+  "description": "Forward provenance-bearing Horus response with explicit epistemic source states. Missing ground is never silently converted into documented absence.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["record_type", "query_id", "requesting_minister", "request_as_received", "status", "source_absence_taxonomy", "acquisition", "sources_searched", "sources_used", "sources_rejected", "records_returned", "unfilled_requests", "provenance", "completeness"],
+  "required": ["record_type", "query_id", "requesting_minister", "request_as_received", "status", "source_absence_taxonomy", "sources_searched", "sources_used", "sources_rejected", "records_returned", "unfilled_requests", "provenance", "completeness"],
   "properties": {
     "record_type": {"const": "horus_query_response"},
     "query_id": {"type": "string", "pattern": "^(MHQ|MHAQ)-[A-Z0-9_-]+$"},
@@ -13,29 +13,6 @@
     "request_as_received": {"type": "object"},
     "status": {"enum": ["GATHERED", "PARTIALLY_GATHERED", "NOT_GATHERED"]},
     "source_absence_taxonomy": {"const": "HORUS-SOURCE-STATE-1.0"},
-    "acquisition": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["protocol", "plan_sha256", "principal_profiles", "date_normalizations", "search_attempts", "requirements", "runtime"],
-      "properties": {
-        "protocol": {"const": "HORUS-ACQUISITION-1.0"},
-        "plan_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "principal_profiles": {"type": "array", "items": {"type": "object"}},
-        "date_normalizations": {"type": "array", "items": {"type": "object"}},
-        "search_attempts": {"type": "array", "items": {"type": "object"}},
-        "requirements": {"type": "array", "items": {"type": "object"}},
-        "runtime": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["engine", "engine_path", "mode"],
-          "properties": {
-            "engine": {"const": "HORUS_CANONICAL_ACQUISITION_ENGINE"},
-            "engine_path": {"const": "runtime/gather.py"},
-            "mode": {"enum": ["LIVE", "FIXTURE"]}
-          }
-        }
-      }
-    },
     "sources_searched": {"type": "array", "items": {"$ref": "#/$defs/source_record"}},
     "sources_used": {"type": "array", "items": {"$ref": "#/$defs/source_record"}},
     "sources_rejected": {"type": "array", "items": {"$ref": "#/$defs/rejected_source_record"}},
@@ -79,24 +56,18 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["information_need", "reason", "evidence_state", "searched_source_refs", "searched_attempt_refs", "absence_claim"],
+        "required": ["information_need", "reason", "evidence_state", "searched_source_refs", "absence_claim"],
         "properties": {
           "information_need": {"type": "string", "minLength": 1},
           "reason": {"type": "string", "minLength": 1},
           "evidence_state": {"enum": ["NOT_SEARCHED", "SEARCHED_NOT_FOUND", "SOURCE_EXISTS_NOT_ACQUIRED", "SOURCE_ACQUIRED_INCOMPLETE"]},
           "searched_source_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
-          "searched_attempt_refs": {"type": "array", "items": {"type": "string", "pattern": "^ATT-[A-Z0-9_-]+$"}},
           "absence_claim": {"const": false}
         },
         "allOf": [{
           "if": {"properties": {"evidence_state": {"const": "NOT_SEARCHED"}}, "required": ["evidence_state"]},
-          "then": {
-            "properties": {
-              "searched_source_refs": {"maxItems": 0},
-              "searched_attempt_refs": {"maxItems": 0}
-            }
-          },
-          "else": {"properties": {"searched_attempt_refs": {"minItems": 1}}}
+          "then": {"properties": {"searched_source_refs": {"maxItems": 0}}},
+          "else": {"properties": {"searched_source_refs": {"minItems": 1}}}
         }]
       }
     },
