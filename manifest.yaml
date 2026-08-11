@@ -17,10 +17,14 @@ safeguards:
   - horus_retains_source_selection_independence
   - adversarial_queries_are_distinct_and_mandatory_before_final_reasoned_judgment
   - source_absence_states_must_not_collapse
+  - deterministic_primary_source_acquisition_required
+  - searched_not_found_requires_completed_reachable_protocol
 query_contract:
   response_schema: contracts/horus-query-response.schema.json
-  response_schema_version: 1.2.0
-  predecessor_response_schema: contracts/horus-query-response.schema.v1.1.0.json
+  response_schema_version: 1.3.0
+  predecessor_response_schema: contracts/horus-query-response.schema.v1.2.0.json
+  historical_response_schemas:
+    - contracts/horus-query-response.schema.v1.1.0.json
   accepted_query_prefixes:
     - MHQ
     - MHAQ
@@ -46,8 +50,25 @@ query_contract:
     - sources_rejected_with_reason
     - records_returned_with_source_refs
     - unfilled_requests_with_reason
+    - acquisition_search_attempts
     - horus_repository_commit
     - retrieval_time
+acquisition_contract:
+  protocol: HORUS-ACQUISITION-1.0
+  principal_profile_schema: contracts/principal-source-profile.schema.json
+  receipt_schema: contracts/acquisition-receipt.schema.json
+  canonical_engine: runtime/gather.py
+  principal_registry: registry/principals
+  date_normalization: CODE_ONLY_NO_MODEL_CALENDAR_GUESSING
+  minimum_original_language_t1_steps:
+    - DIRECT_FIRST_PARTY_ARCHIVE
+    - DIRECT_FIRST_PARTY_SITE_SEARCH
+    - ALTERNATE_FIRST_PARTY_CHANNEL
+    - FIRST_PARTY_DOMAIN_RECOVERY
+  secondary_discovery_rule: MAY_DISCOVER_PRIMARY_BUT_NEVER_SUBSTITUTE_FOR_T1
+  searched_not_found_rule: ALL_REQUIRED_STEPS_ATTEMPTED_AND_REACHABLE
+  fail_closed_without_attempt_trace: NOT_SEARCHED
+  completeness: PENDING_PROBE
 charter_amendments:
   - id: HORUS-AMD-001
     name: the language tooth
@@ -120,3 +141,27 @@ charter_amendments:
       An AI system must not convert ignorance into negative evidence. The state of
       the search and the state of the world are separate facts and must remain so
       in the record.
+  - id: HORUS-AMD-005
+    name: deterministic primary-source acquisition
+    date: 2026-08-10
+    status: RATIFIED_BY_OWNER
+    amends:
+      - charter.md, deterministic primary-source acquisition
+      - contracts/horus-query-response.schema.json
+      - contracts/principal-source-profile.schema.json
+      - contracts/acquisition-receipt.schema.json
+      - runtime/gather.py
+    effect: >-
+      Original-language T1 gaps must carry a deterministic acquisition receipt.
+      Principal language, timezone, calendar and first-party channels are resolved
+      from a pinned registry; dates are normalized in code; the minimum first-party
+      search ladder is fixed; and SEARCHED_NOT_FOUND is forbidden unless every
+      required step was both attempted and reachable. The canonical Horus runtime
+      owns the receipt, source-state floor, provenance commit and fail-closed result.
+    rationale: >-
+      The 2026-08-10 U.S.-Iran proving inquiry exposed a retrieval-layer failure:
+      10 August 2026 was manually converted to 20 Mordad 1405 instead of 19 Mordad,
+      and ad-hoc external search was allowed to stand in for an exhausted first-party
+      acquisition procedure. The system correctly noticed a T1 gap but could not
+      prove that it had searched for the source correctly. The acquisition procedure
+      must therefore become constitutional, machine-recorded and executable.
