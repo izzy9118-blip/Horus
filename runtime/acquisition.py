@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Deterministic pre-search protocol and acquisition-receipt validation for Horus.
 
-This module does not judge evidence and does not decide what a source means.  It
-makes the procedure that precedes a T1 gap machine-visible.  In particular,
-SEARCHED_NOT_FOUND is not allowed to stand on a few ad-hoc web queries: the
-minimum first-party search ladder must have been both attempted and successfully
-reachable.
+This module does not judge evidence and does not decide what a source means. It
+makes the procedure that precedes a T1 gap machine-visible. In particular,
+SEARCHED_NOT_FOUND is not allowed to stand on a few ad-hoc web queries when a
+first-party T1 request is in force: the minimum first-party search ladder must
+have been both attempted and successfully reachable.
 """
 from __future__ import annotations
 
@@ -13,10 +13,10 @@ import hashlib
 import json
 from typing import Any
 
-try:  # package import under tests
+try:
     from .calendars import normalize_date
     from .source_registry import resolve_principal
-except ImportError:  # direct execution from runtime/
+except ImportError:
     from calendars import normalize_date
     from source_registry import resolve_principal
 
@@ -218,5 +218,18 @@ def requirement_for(receipt: dict[str, Any], information_need: str, principal_id
 
 
 def searched_not_found_allowed(receipt: dict[str, Any], information_need: str) -> bool:
+    """Return whether a negative search result is procedurally admissible.
+
+    Original-language T1 has the stronger constitutional ladder and therefore
+    requires every generated T1 requirement to be satisfied. Other tiers still
+    require an executed, reachable search attempt, but they do not inherit the T1
+    four-step ladder merely because they share the same response taxonomy.
+    """
     requirements = requirement_for(receipt, information_need)
-    return bool(requirements) and all(r.get("minimum_protocol_satisfied") is True for r in requirements)
+    if requirements:
+        return all(r.get("minimum_protocol_satisfied") is True for r in requirements)
+    return any(
+        attempt.get("information_need") == information_need
+        and attempt.get("result") in REACHABLE_RESULTS
+        for attempt in receipt.get("search_attempts", [])
+    )
