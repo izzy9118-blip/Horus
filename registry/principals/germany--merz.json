@@ -1,0 +1,17 @@
+{
+  "record_type": "horus_principal_source_profile",
+  "version": "1.0.0",
+  "principal_id": "germany--merz",
+  "principal_name": "Friedrich Merz",
+  "principal_type": "person",
+  "aliases": ["Friedrich Merz"],
+  "original_languages": ["de"],
+  "timezone": "Europe/Berlin",
+  "calendars": [{"id": "gregorian", "role": "local"}],
+  "channels": [
+    {"channel_id": "bundesregierung-de", "name": "Federal Government of Germany", "base_url": "https://www.bundesregierung.de/", "channel_class": "PRIMARY", "languages": ["de"], "supported_methods": ["DIRECT_FIRST_PARTY_ARCHIVE", "DIRECT_FIRST_PARTY_SITE_SEARCH", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Principal's governmental speech, bulletin and press-conference channel."},
+    {"channel_id": "bundestag-de", "name": "German Bundestag", "base_url": "https://www.bundestag.de/", "channel_class": "OFFICIAL_MIRROR", "languages": ["de"], "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"], "notes": "Official parliamentary record of delivered statements; not a substitute for the executive's own record when that record is available."}
+  ],
+  "non_t1_classes": ["STATE_NEWS_AGENCY", "INDEPENDENT_PRESS", "FOREIGN_GOVERNMENT", "AGGREGATOR", "TRANSLATION_ONLY"],
+  "completeness": "PENDING_PROBE"
+}
