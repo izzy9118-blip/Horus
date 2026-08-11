@@ -1,9 +1,16 @@
 import json
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 
-from runtime.acquisition import build_plan, build_receipt, searched_not_found_allowed, validate_receipt
+from runtime.acquisition import (
+    AcquisitionProtocolError,
+    build_plan,
+    build_receipt,
+    searched_not_found_allowed,
+    validate_receipt,
+)
 from runtime.calendars import gregorian_to_solar_hijri
 from runtime.gather import _fallback_unfilled
 
@@ -138,6 +145,22 @@ def test_blocked_primary_archive_prevents_searched_not_found():
     missing = _fallback_unfilled(query(), receipt)
     assert missing[0]["evidence_state"] == "SOURCE_ACQUIRED_INCOMPLETE"
     assert missing[0]["absence_claim"] is False
+
+
+def test_unregistered_first_party_channel_is_rejected():
+    rows = attempts()
+    iran = next(x for x in rows if x["principal_id"] == "iran")
+    iran["channel_id"] = "invented-official-channel"
+    with pytest.raises(AcquisitionProtocolError, match="not registered"):
+        build_receipt(query(), rows, mode="FIXTURE")
+
+
+def test_wrong_language_cannot_satisfy_original_language_t1():
+    rows = attempts()
+    iran = next(x for x in rows if x["principal_id"] == "iran")
+    iran["language"] = "en"
+    with pytest.raises(AcquisitionProtocolError, match="unregistered language"):
+        build_receipt(query(), rows, mode="FIXTURE")
 
 
 def test_non_t1_search_does_not_inherit_four_step_t1_ladder():
