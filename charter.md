@@ -101,7 +101,7 @@ A source gap may be reported only after the acquisition procedure that produced 
 
 For any information need requiring original-language T1, Horus must resolve each named principal through the pinned Principal Source Registry before searching. The profile supplies the principal's original language, local timezone, relevant local calendar, first-party channels, alternate first-party channels, and first-party diplomatic channels. Search terms may vary with the inquiry; the required search procedure may not.
 
-Dates used to search a principal's archive are normalized by code, not by model recollection. The canonical Gregorian date and every required local-calendar rendering travel together in the acquisition receipt. A manually inferred calendar date does not satisfy the protocol.
+Dates used to search a principal's archive are normalized by code, not by model recollection. The canonical Gregorian date and every required local-calendar rendering travel together in the acquisition receipt. Every calendar day in a bounded date range is enumerated. A manually inferred calendar date, an omitted interior date, or an attempt carrying a date pair outside the generated plan does not satisfy the protocol.
 
 The minimum original-language T1 acquisition ladder is:
 
@@ -112,7 +112,9 @@ The minimum original-language T1 acquisition ladder is:
 
 Secondary reporting may be used for discovery after or alongside those steps, but a secondary account never fills T1 and never substitutes for a required first-party step. A discovered reference to an official statement is a lead to the primary record, not the primary record itself.
 
-Every attempted route is an acquisition record distinct from every documentary source. Horus records the principal, channel, search method, language, canonical date, local date, query, result, retrieval time, and any recovered source reference. `sources_searched` therefore records documentary sources; `search_attempts` records the acquisition procedure that may or may not have found a source.
+Every attempted route is an acquisition record distinct from every documentary source. Horus records the principal, channel, search method, language, canonical date, local date, query, attempted URL, result, retrieval time, detail, and any recovered source reference. The canonical engine verifies the information need and date pair against its plan; the channel class, language, and method against the pinned profile; and the URL host against that channel's registered host or an explicitly listed redirect host. `sources_searched` therefore records documentary sources; `search_attempts` records the acquisition procedure that may or may not have found a source.
+
+A documentary source may enter `sources_searched` only through a `FOUND` attempt. A T1 source must remain on the registered first-party channel, in a principal's registered original language, through the returned record that cites it. A `GATHERED` original-language T1 response must carry qualifying cited ground for every information need and every principal in scope. A translated source, secondary discovery result, or one-sided bilateral record may be retained as visibly qualified material but cannot satisfy that condition.
 
 `SEARCHED_NOT_FOUND` is valid for an original-language T1 request only when every required ladder step was both attempted and reachable enough to return either `FOUND` or `NO_MATCH`. A blocked archive, unavailable endpoint, index error, timeout, or discovered-but-unacquired source prevents that state. The appropriate unresolved state remains an acquisition failure or incomplete acquisition, never an asserted negative.
 

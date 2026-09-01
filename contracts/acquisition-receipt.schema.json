@@ -41,7 +41,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["attempt_id", "information_need", "principal_id", "channel_id", "channel_class", "search_method", "language", "canonical_date", "local_date", "query", "result", "attempted_at"],
+        "required": ["attempt_id", "information_need", "principal_id", "channel_id", "channel_class", "search_method", "language", "canonical_date", "local_date", "query", "url", "result", "detail", "attempted_at"],
         "properties": {
           "attempt_id": {"type": "string", "pattern": "^ATT-[A-Z0-9_-]+$"},
           "information_need": {"type": "string", "minLength": 1},
@@ -53,10 +53,10 @@
           "canonical_date": {"type": ["string", "null"], "format": "date"},
           "local_date": {"type": ["string", "null"]},
           "query": {"type": "string", "minLength": 1},
-          "url": {"type": ["string", "null"]},
+          "url": {"type": "string", "format": "uri", "pattern": "^https?://"},
           "result": {"enum": ["FOUND", "NO_MATCH", "ACCESS_BLOCKED", "ENDPOINT_UNAVAILABLE", "INDEX_ERROR", "TIMEOUT", "SOURCE_DISCOVERED_NOT_ACQUIRED"]},
           "source_ref": {"type": ["string", "null"]},
-          "detail": {"type": ["string", "null"]},
+          "detail": {"type": "string", "minLength": 1},
           "attempted_at": {"type": "string", "format": "date-time"}
         }
       }

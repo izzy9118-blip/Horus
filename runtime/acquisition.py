@@ -9,9 +9,12 @@ have been both attempted and successfully reachable.
 """
 from __future__ import annotations
 
+import datetime as dt
 import hashlib
 import json
+import re
 from typing import Any
+from urllib.parse import urlparse
 
 try:
     from .calendars import normalize_date
@@ -37,6 +40,7 @@ ATTEMPT_RESULTS = {
     "SOURCE_DISCOVERED_NOT_ACQUIRED",
 }
 REACHABLE_RESULTS = {"FOUND", "NO_MATCH"}
+ATTEMPT_ID_RE = re.compile(r"^ATT-[A-Z0-9_-]+$")
 
 
 class AcquisitionProtocolError(ValueError):
@@ -59,12 +63,59 @@ def _needs_original_t1(query: dict[str, Any]) -> bool:
 
 def _date_scope(query: dict[str, Any]) -> list[str]:
     scope = query.get("time_scope") or {}
-    dates: list[str] = []
-    for key in ("start", "end"):
-        value = scope.get(key)
-        if isinstance(value, str) and value and value not in dates:
-            dates.append(value)
-    return dates
+    if not isinstance(scope, dict):
+        raise AcquisitionProtocolError("query time_scope must be an object")
+    start = scope.get("start")
+    end = scope.get("end")
+    if start in (None, "") and end in (None, ""):
+        return []
+    if not isinstance(start, str) or not isinstance(end, str) or not start or not end:
+        raise AcquisitionProtocolError("query time_scope must provide both start and end dates")
+    try:
+        first = dt.date.fromisoformat(start)
+        last = dt.date.fromisoformat(end)
+    except ValueError as exc:
+        raise AcquisitionProtocolError("query time_scope dates must use valid YYYY-MM-DD values") from exc
+    if first > last:
+        raise AcquisitionProtocolError("query time_scope start must not be after end")
+    return [(first + dt.timedelta(days=offset)).isoformat() for offset in range((last - first).days + 1)]
+
+
+def _url_host(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        raise AcquisitionProtocolError(f"acquisition URL must be an absolute HTTP(S) URL: {url!r}")
+    return parsed.hostname.casefold().rstrip(".")
+
+
+def _channel_hosts(channel: dict[str, Any]) -> set[str]:
+    hosts = {_url_host(channel["base_url"])}
+    for host in channel.get("allowed_redirect_hosts", []):
+        if not isinstance(host, str) or not host.strip():
+            raise AcquisitionProtocolError(f"invalid allowed_redirect_hosts entry for channel {channel.get('channel_id')!r}")
+        normalized = host.casefold().strip().rstrip(".")
+        if "://" in normalized or "/" in normalized:
+            raise AcquisitionProtocolError(
+                f"allowed redirect host for channel {channel.get('channel_id')!r} must be a hostname"
+            )
+        hosts.add(normalized)
+    return hosts
+
+
+def url_matches_channel(url: str, channel: dict[str, Any]) -> bool:
+    host = _url_host(url)
+    return any(host == allowed or host.endswith("." + allowed) for allowed in _channel_hosts(channel))
+
+
+def registered_channel(profile: dict[str, Any], channel_id: str) -> dict[str, Any] | None:
+    return next((c for c in profile.get("channels", []) if c.get("channel_id") == channel_id), None)
+
+
+def expected_date_pairs(plan: dict[str, Any]) -> dict[str, set[tuple[str, str]]]:
+    values: dict[str, set[tuple[str, str]]] = {}
+    for item in plan.get("date_normalizations", []):
+        values.setdefault(item["principal_id"], set()).add((item["canonical_date"], item["local_date"]))
+    return values
 
 
 def _resolved_profiles(query: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -141,17 +192,39 @@ def _validate_attempt(attempt: dict[str, Any]) -> None:
     for field in required:
         if attempt.get(field) in (None, ""):
             raise AcquisitionProtocolError(f"search attempt missing {field}")
+    if not ATTEMPT_ID_RE.fullmatch(str(attempt["attempt_id"])):
+        raise AcquisitionProtocolError(f"invalid search attempt id: {attempt['attempt_id']!r}")
     if attempt["result"] not in ATTEMPT_RESULTS:
         raise AcquisitionProtocolError(f"invalid search attempt result: {attempt['result']}")
     if attempt["search_method"] not in set(REQUIRED_T1_STEPS) | {"SECONDARY_DISCOVERY"}:
         raise AcquisitionProtocolError(f"invalid search method: {attempt['search_method']}")
+    if not isinstance(attempt.get("url"), str) or not attempt["url"].strip():
+        raise AcquisitionProtocolError("search attempt missing url")
+    _url_host(attempt["url"])
+    if not isinstance(attempt.get("detail"), str) or not attempt["detail"].strip():
+        raise AcquisitionProtocolError("search attempt missing detail")
+    if attempt["result"] == "FOUND":
+        if not isinstance(attempt.get("source_ref"), str) or not attempt["source_ref"].strip():
+            raise AcquisitionProtocolError("FOUND search attempt must identify source_ref")
+    elif attempt.get("source_ref") not in (None, ""):
+        raise AcquisitionProtocolError("only a FOUND search attempt may identify source_ref")
+    try:
+        dt.datetime.fromisoformat(str(attempt["attempted_at"]).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise AcquisitionProtocolError("search attempt attempted_at must be a valid ISO date-time") from exc
 
 
 def _validate_attempt_against_registry(
     attempt: dict[str, Any],
     profiles: dict[str, dict[str, Any]],
     original_t1: bool,
+    information_needs: set[str],
+    planned_dates: dict[str, set[tuple[str, str]]],
 ) -> None:
+    if attempt["information_need"] not in information_needs:
+        raise AcquisitionProtocolError(
+            f"search attempt information_need {attempt['information_need']!r} is outside the query"
+        )
     if not profiles:
         return
     principal_id = attempt["principal_id"]
@@ -159,10 +232,22 @@ def _validate_attempt_against_registry(
         raise AcquisitionProtocolError(
             f"search attempt principal {principal_id!r} is outside the query's pinned principal scope"
         )
-    if attempt["search_method"] == "SECONDARY_DISCOVERY":
-        return
     profile = profiles[principal_id]
-    channel = next((c for c in profile.get("channels", []) if c.get("channel_id") == attempt["channel_id"]), None)
+    expected = planned_dates.get(principal_id, set())
+    pair = (attempt.get("canonical_date"), attempt.get("local_date"))
+    if expected and pair not in expected:
+        raise AcquisitionProtocolError(
+            f"search attempt date pair {pair!r} does not match the deterministic plan for {principal_id!r}"
+        )
+    if not expected and pair != (None, None):
+        raise AcquisitionProtocolError(
+            f"search attempt supplied dates for {principal_id!r} although the query has no time scope"
+        )
+    if attempt["search_method"] == "SECONDARY_DISCOVERY":
+        if attempt["channel_class"] != "EXTERNAL_RECOVERY":
+            raise AcquisitionProtocolError("SECONDARY_DISCOVERY must use channel_class EXTERNAL_RECOVERY")
+        return
+    channel = registered_channel(profile, attempt["channel_id"])
     if channel is None:
         raise AcquisitionProtocolError(
             f"search attempt channel {attempt['channel_id']!r} is not registered for principal {principal_id!r}"
@@ -171,9 +256,22 @@ def _validate_attempt_against_registry(
         raise AcquisitionProtocolError(
             f"search method {attempt['search_method']!r} is not registered for channel {attempt['channel_id']!r}"
         )
+    if attempt["channel_class"] != channel.get("channel_class"):
+        raise AcquisitionProtocolError(
+            f"search attempt channel_class {attempt['channel_class']!r} does not match registered channel "
+            f"{attempt['channel_id']!r} ({channel.get('channel_class')!r})"
+        )
+    if attempt["language"] not in channel.get("languages", []):
+        raise AcquisitionProtocolError(
+            f"search attempt for channel {attempt['channel_id']!r} used unregistered language {attempt['language']!r}"
+        )
     if original_t1 and attempt["language"] not in profile.get("original_languages", []):
         raise AcquisitionProtocolError(
             f"original-language T1 attempt for {principal_id!r} used unregistered language {attempt['language']!r}"
+        )
+    if not url_matches_channel(attempt["url"], channel):
+        raise AcquisitionProtocolError(
+            f"search attempt URL host is not registered for channel {attempt['channel_id']!r}"
         )
 
 
@@ -185,12 +283,16 @@ def build_receipt(query: dict[str, Any], attempts: list[dict[str, Any]], mode: s
         raise AcquisitionProtocolError("search attempts must be a list")
     profiles = _resolved_profiles(query)
     original_t1 = _needs_original_t1(query)
+    information_needs = set(query["information_needed"])
+    planned_dates = expected_date_pairs(plan)
     ids: set[str] = set()
     for attempt in attempts:
         if not isinstance(attempt, dict):
             raise AcquisitionProtocolError("each search attempt must be an object")
         _validate_attempt(attempt)
-        _validate_attempt_against_registry(attempt, profiles, original_t1)
+        _validate_attempt_against_registry(
+            attempt, profiles, original_t1, information_needs, planned_dates
+        )
         if attempt["attempt_id"] in ids:
             raise AcquisitionProtocolError(f"duplicate attempt_id: {attempt['attempt_id']}")
         ids.add(attempt["attempt_id"])
@@ -202,13 +304,26 @@ def build_receipt(query: dict[str, Any], attempts: list[dict[str, Any]], mode: s
             if a["information_need"] == requirement["information_need"]
             and a["principal_id"] == requirement["principal_id"]
         ]
-        completed = sorted({a["search_method"] for a in matches if a["search_method"] in REQUIRED_T1_STEPS})
         required_steps = requirement["required_steps"]
-        attempted = set(required_steps) <= set(completed)
+        dates = planned_dates.get(requirement["principal_id"], set()) or {(None, None)}
+        completed = sorted(
+            step for step in required_steps
+            if all(any(
+                a["search_method"] == step
+                and (a.get("canonical_date"), a.get("local_date")) == date_pair
+                for a in matches
+            ) for date_pair in dates)
+        )
         reachable = {
             step for step in required_steps
-            if any(a["search_method"] == step and a["result"] in REACHABLE_RESULTS for a in matches)
+            if all(any(
+                a["search_method"] == step
+                and a["result"] in REACHABLE_RESULTS
+                and (a.get("canonical_date"), a.get("local_date")) == date_pair
+                for a in matches
+            ) for date_pair in dates)
         }
+        attempted = set(required_steps) <= set(completed)
         satisfied = set(required_steps) <= reachable
         requirements.append({
             **requirement,
@@ -269,6 +384,19 @@ def searched_not_found_allowed(receipt: dict[str, Any], information_need: str) -
     requirements = requirement_for(receipt, information_need)
     if requirements:
         return all(r.get("minimum_protocol_satisfied") is True for r in requirements)
+    planned_dates = expected_date_pairs(receipt)
+    if planned_dates:
+        return all(
+            any(
+                attempt.get("information_need") == information_need
+                and attempt.get("principal_id") == principal_id
+                and (attempt.get("canonical_date"), attempt.get("local_date")) == date_pair
+                and attempt.get("result") in REACHABLE_RESULTS
+                for attempt in receipt.get("search_attempts", [])
+            )
+            for principal_id, date_pairs in planned_dates.items()
+            for date_pair in date_pairs
+        )
     return any(
         attempt.get("information_need") == information_need
         and attempt.get("result") in REACHABLE_RESULTS

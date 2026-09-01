@@ -19,6 +19,7 @@ safeguards:
   - source_absence_states_must_not_collapse
   - deterministic_primary_source_acquisition_required
   - searched_not_found_requires_completed_reachable_protocol
+  - acquisition_attempts_bound_to_plan_registry_and_returned_ground
 query_contract:
   response_schema: contracts/horus-query-response.schema.json
   response_schema_version: 1.3.0
@@ -165,3 +166,27 @@ charter_amendments:
       acquisition procedure. The system correctly noticed a T1 gap but could not
       prove that it had searched for the source correctly. The acquisition procedure
       must therefore become constitutional, machine-recorded and executable.
+  - id: HORUS-AMD-006
+    name: acquisition-ground binding
+    date: 2026-09-01
+    status: RATIFIED_BY_OWNER
+    amends:
+      - charter.md, deterministic primary-source acquisition
+      - contracts/principal-source-profile.schema.json
+      - contracts/acquisition-receipt.schema.json
+      - runtime/acquisition.py
+      - runtime/gather.py
+    effect: >-
+      Every acquisition attempt is bound to an information need, a code-normalized
+      date pair, the registered class and language of its channel, and a final URL
+      on that channel's registered or explicitly allowed redirect host. Date ranges
+      enumerate every day. Documentary sources and returned T1 records must trace
+      to FOUND attempts; original-language T1 gathering must contain qualifying
+      ground for every requested principal and information need.
+    rationale: >-
+      The original deterministic receipt could be satisfied with incorrect dates,
+      unregistered URL hosts, or a channel class asserted by the host. A staged
+      GATHERED result could then omit one principal or relabel translated material
+      as original T1 because returned ground was not mechanically tied back to the
+      receipt. Procedural proof requires these identities to be checked, not merely
+      recorded.

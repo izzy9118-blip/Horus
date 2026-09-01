@@ -12,7 +12,7 @@ from runtime.acquisition import (
     validate_receipt,
 )
 from runtime.calendars import gregorian_to_solar_hijri
-from runtime.gather import _fallback_unfilled
+from runtime.gather import GatherError, _fallback_unfilled, _validate_staged_result, build_response
 
 BASE = Path(__file__).resolve().parents[1]
 
@@ -50,13 +50,13 @@ def attempts(block_iran_archive=False):
             ("whitehouse-gov", "PRIMARY", "DIRECT_FIRST_PARTY_ARCHIVE"),
             ("whitehouse-gov", "PRIMARY", "DIRECT_FIRST_PARTY_SITE_SEARCH"),
             ("state-gov", "ALTERNATE_PRIMARY", "ALTERNATE_FIRST_PARTY_CHANNEL"),
-            ("whitehouse-gov", "EXTERNAL_RECOVERY", "FIRST_PARTY_DOMAIN_RECOVERY"),
+            ("whitehouse-gov", "PRIMARY", "FIRST_PARTY_DOMAIN_RECOVERY"),
         ],
         "iran": [
             ("president-ir", "PRIMARY", "DIRECT_FIRST_PARTY_ARCHIVE"),
             ("mfa-gov-ir", "ALTERNATE_PRIMARY", "DIRECT_FIRST_PARTY_SITE_SEARCH"),
             ("geneva-mfa-ir", "DIPLOMATIC_PRIMARY", "ALTERNATE_FIRST_PARTY_CHANNEL"),
-            ("mfa-gov-ir", "EXTERNAL_RECOVERY", "FIRST_PARTY_DOMAIN_RECOVERY"),
+            ("mfa-gov-ir", "ALTERNATE_PRIMARY", "FIRST_PARTY_DOMAIN_RECOVERY"),
         ],
     }
     for principal, values in definitions.items():
@@ -75,10 +75,16 @@ def attempts(block_iran_archive=False):
                 "canonical_date": "2026-08-10",
                 "local_date": "1405-05-19" if principal == "iran" else "2026-08-10",
                 "query": "fixture query",
-                "url": None,
+                "url": {
+                    "whitehouse-gov": "https://www.whitehouse.gov/search/",
+                    "state-gov": "https://www.state.gov/search/",
+                    "president-ir": "https://president.ir/fa/archive/",
+                    "mfa-gov-ir": "https://mfa.gov.ir/search/",
+                    "geneva-mfa-ir": "https://geneva.mfa.gov.ir/search/",
+                }[channel],
                 "result": result,
                 "source_ref": None,
-                "detail": None,
+                "detail": "Fixture endpoint was reached and returned no matching record.",
                 "attempted_at": "2026-08-10T23:30:00Z",
             })
             serial += 1
@@ -100,7 +106,7 @@ def non_t1_query():
             "original_language_required": False,
         }],
         "principal_scope": ["Ukraine"],
-        "time_scope": {"start": "2026-07-22", "end": "2026-08-10"},
+        "time_scope": {"start": "2026-08-10", "end": "2026-08-10"},
         "source_selection_rule": "HORUS_RETAINS_SOURCE_SELECTION_INDEPENDENCE_EXCEPT_EXPLICIT_DOCUMENT_REQUESTS",
         "source_absence_taxonomy": "HORUS-SOURCE-STATE-1.0",
         "provenance": {"produced_by": "xenophon", "repository_commit": "a" * 40},
@@ -129,6 +135,25 @@ def test_plan_carries_principal_local_dates():
         "calendar": "gregorian",
         "local_date": "2026-08-10",
     }]
+
+
+def test_plan_enumerates_every_day_in_a_multi_day_scope():
+    item = query()
+    item["time_scope"] = {"start": "2026-08-08", "end": "2026-08-10"}
+    plan = build_plan(item)
+    iran = [x for x in plan["date_normalizations"] if x["principal_id"] == "iran"]
+    assert [(x["canonical_date"], x["local_date"]) for x in iran] == [
+        ("2026-08-08", "1405-05-17"),
+        ("2026-08-09", "1405-05-18"),
+        ("2026-08-10", "1405-05-19"),
+    ]
+
+
+def test_one_day_of_a_multi_day_ladder_cannot_prove_searched_not_found():
+    item = query()
+    item["time_scope"] = {"start": "2026-08-08", "end": "2026-08-10"}
+    receipt = build_receipt(item, attempts(), mode="FIXTURE")
+    assert searched_not_found_allowed(receipt, item["information_needed"][0]) is False
 
 
 def test_complete_reachable_ladder_allows_searched_not_found():
@@ -163,6 +188,37 @@ def test_wrong_language_cannot_satisfy_original_language_t1():
         build_receipt(query(), rows, mode="FIXTURE")
 
 
+def test_wrong_local_date_is_rejected():
+    rows = attempts()
+    iran = next(x for x in rows if x["principal_id"] == "iran")
+    iran["local_date"] = "1405-05-20"
+    with pytest.raises(AcquisitionProtocolError, match="date pair"):
+        build_receipt(query(), rows, mode="FIXTURE")
+
+
+def test_off_domain_first_party_attempt_is_rejected():
+    rows = attempts()
+    iran = next(x for x in rows if x["principal_id"] == "iran")
+    iran["url"] = "https://evil.example/fake-official-record"
+    with pytest.raises(AcquisitionProtocolError, match="URL host"):
+        build_receipt(query(), rows, mode="FIXTURE")
+
+
+def test_claimed_channel_class_must_match_registry():
+    rows = attempts()
+    iran = next(x for x in rows if x["principal_id"] == "iran")
+    iran["channel_class"] = "OFFICIAL_MIRROR"
+    with pytest.raises(AcquisitionProtocolError, match="channel_class"):
+        build_receipt(query(), rows, mode="FIXTURE")
+
+
+def test_registered_redirect_host_is_accepted():
+    rows = attempts()
+    mission = next(x for x in rows if x["channel_id"] == "geneva-mfa-ir")
+    mission["url"] = "https://geneva.mfa.ir/fa/record"
+    build_receipt(query(), rows, mode="FIXTURE")
+
+
 def test_non_t1_search_does_not_inherit_four_step_t1_ladder():
     q = non_t1_query()
     need = q["information_needed"][0]
@@ -177,10 +233,10 @@ def test_non_t1_search_does_not_inherit_four_step_t1_ladder():
         "canonical_date": "2026-08-10",
         "local_date": "2026-08-10",
         "query": "fixture operational command search",
-        "url": None,
+        "url": "https://www.president.gov.ua/search/",
         "result": "NO_MATCH",
         "source_ref": None,
-        "detail": None,
+        "detail": "Fixture site search completed without a matching record.",
         "attempted_at": "2026-08-10T23:30:00Z",
     }], mode="FIXTURE")
     assert receipt["requirements"] == []
@@ -194,3 +250,73 @@ def test_profile_and_receipt_contracts_validate():
     for path in sorted((BASE / "registry/principals").glob("*.json")):
         Draft202012Validator(profile_schema).validate(json.loads(path.read_text(encoding="utf-8")))
     Draft202012Validator(receipt_schema).validate(build_receipt(query(), attempts(), mode="FIXTURE"))
+
+
+def _found_receipt():
+    rows = attempts()
+    for row in rows:
+        if row["principal_id"] == "united-states" and row["search_method"] == "DIRECT_FIRST_PARTY_ARCHIVE":
+            row["result"] = "FOUND"
+            row["source_ref"] = "SRC-US"
+        if row["principal_id"] == "iran" and row["search_method"] == "DIRECT_FIRST_PARTY_ARCHIVE":
+            row["result"] = "FOUND"
+            row["source_ref"] = "SRC-IR"
+    return build_receipt(query(), rows, mode="FIXTURE")
+
+
+def _source(ref, url, language, issuer):
+    return {
+        "source_ref": ref,
+        "document_identity": f"Official record {ref}",
+        "url": url,
+        "issuer": issuer,
+        "date": "2026-08-10",
+        "language": language,
+        "source_tier": "T1",
+        "retrieval_date": "2026-08-10",
+        "repository_path": None,
+        "sha256": None,
+        "relevant_locator": "fixture",
+    }
+
+
+def _gathered_result(include_iran=True, iran_language="fa"):
+    need = query()["information_needed"][0]
+    us = _source("SRC-US", "https://www.whitehouse.gov/briefing-room/test", "en", "White House")
+    iran = _source("SRC-IR", "https://president.ir/fa/test", iran_language, "Presidency of Iran")
+    sources = [us, iran] if include_iran else [us]
+    return {
+        "status": "GATHERED",
+        "sources_searched": sources,
+        "sources_used": sources,
+        "sources_rejected": [],
+        "records_returned": [{
+            "information_need": need,
+            "finding": "Fixture bilateral official positions.",
+            "evidence_state": "SUPPORTED",
+            "source_refs": [source["source_ref"] for source in sources],
+            "absence_scope": None,
+            "absence_basis": None,
+            "tier": "T1",
+            "language": None,
+            "language_state": "ORIGINAL",
+        }],
+        "unfilled_requests": [],
+    }
+
+
+def test_gathered_original_t1_requires_each_principal():
+    with pytest.raises(GatherError, match="lacks qualifying 'iran' ground"):
+        _validate_staged_result(query(), _gathered_result(include_iran=False), _found_receipt())
+
+
+def test_translation_only_t1_source_is_rejected():
+    with pytest.raises(GatherError, match="not bound to exactly one principal"):
+        _validate_staged_result(query(), _gathered_result(iran_language="en"), _found_receipt())
+
+
+def test_unsafe_query_id_cannot_escape_live_staging_directory():
+    item = query()
+    item["query_id"] = "../../escape"
+    with pytest.raises(GatherError, match="safe MHQ-/MHAQ-"):
+        build_response(item, mode="FIXTURE")

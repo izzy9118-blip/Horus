@@ -33,7 +33,8 @@
     {
       "channel_id": "geneva-mfa-ir",
       "name": "Permanent Mission of the Islamic Republic of Iran in Geneva",
-      "base_url": "http://geneva.mfa.ir/",
+      "base_url": "https://geneva.mfa.gov.ir/",
+      "allowed_redirect_hosts": ["geneva.mfa.ir"],
       "channel_class": "DIPLOMATIC_PRIMARY",
       "languages": ["fa", "en"],
       "supported_methods": ["ALTERNATE_FIRST_PARTY_CHANNEL", "FIRST_PARTY_DOMAIN_RECOVERY"],
